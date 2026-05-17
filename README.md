@@ -48,11 +48,12 @@ Add to `~/.config/opencode/opencode.json`:
 | [`grill-with-docs`](skills/grill-with-docs/SKILL.md) | Like `grill-me`, but challenges your plan against the existing domain model and updates `CONTEXT.md` and ADRs inline. |
 | [`zoom-out`](skills/zoom-out/SKILL.md) | Map all relevant modules and callers for an unfamiliar area of code, using the project's domain vocabulary. |
 | [`handoff`](skills/handoff/SKILL.md) | Compact the current conversation into a handoff document for a fresh agent session to pick up. |
+| [`to-prd`](skills/to-prd/SKILL.md) | Synthesize the current conversation context into a PRD and publish it to the project issue tracker. |
 | [`to-issues`](skills/to-issues/SKILL.md) | Break a plan or PRD into independently-grabbable GitHub issues using tracer-bullet vertical slices. |
 | [`write-a-skill`](skills/write-a-skill/SKILL.md) | Create new agent skills with proper structure, progressive disclosure, and bundled reference files. |
 
 ## Credits
 
-`tdd`, `grill-me`, `grill-with-docs`, `zoom-out`, `handoff`, `to-issues`, and `write-a-skill` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) and used under the MIT License.
+`tdd`, `grill-me`, `grill-with-docs`, `zoom-out`, `handoff`, `to-issues`, `to-prd`, and `write-a-skill` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) and used under the MIT License.
 
 Skills conform to the [Agent Skills standard](https://agentskills.io/specification).
