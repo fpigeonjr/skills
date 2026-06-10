@@ -51,6 +51,7 @@ Add to `~/.config/opencode/opencode.json`:
 | [`to-prd`](skills/to-prd/SKILL.md) | Synthesize the current conversation context into a PRD and publish it to the project issue tracker. |
 | [`to-issues`](skills/to-issues/SKILL.md) | Break a plan or PRD into independently-grabbable GitHub issues using tracer-bullet vertical slices. |
 | [`write-a-skill`](skills/write-a-skill/SKILL.md) | Create new agent skills with proper structure, progressive disclosure, and bundled reference files. |
+| [`start-ticket`](skills/start-ticket/SKILL.md) | Create a feature branch off the current integration branch for a Jira ticket, following the team's sprint branching strategy. |
 
 ## Credits
 
