@@ -1,13 +1,13 @@
 ---
 name: start-ticket
-description: Start work on a new Jira ticket by creating a feature branch off the current integration branch, following the team's git branching strategy. Use when the user wants to begin a ticket, start new work, create a feature branch from a Jira ticket, or pastes a Jira ticket URL or ID to branch from.
+description: Start work on a new Jira ticket by creating a worktree and feature branch off the current integration branch, following the team's git branching strategy. Use when the user wants to begin a ticket, start new work, create a feature branch from a Jira ticket, or pastes a Jira ticket URL or ID to branch from.
 argument-hint: "[Jira ticket URL or ID]"
 allowed-tools: Bash
 ---
 
 # Start Ticket
 
-Create a feature branch for a Jira ticket off the latest integration branch, following the team's branching strategy.
+Create a worktree and feature branch for a Jira ticket off the latest integration branch, using `wt` (worktrunk) for worktree management.
 
 ## Branching strategy
 
@@ -26,11 +26,7 @@ The argument may be either a Jira URL or a bare ticket ID.
 
 Normalize to uppercase and validate against `^[A-Z][A-Z0-9]+-\d+$`. If it doesn't match, stop and report — do not create a branch from a malformed ID.
 
-### 2. Check the working tree is clean
-
-Run `git status --porcelain`. If there is any output, **stop and report** the dirty files. A new ticket must start from a clean tree. Do not auto-stash or auto-commit.
-
-### 3. Fetch and find the current integration branch
+### 2. Fetch and find the current integration branch
 
 ```bash
 git fetch origin --prune
@@ -47,32 +43,25 @@ If no matching integration branch is found, **stop** with a clear error listing 
 
 Show the chosen integration branch to the user and ask them to confirm or override before proceeding.
 
-### 4. Handle an existing feature branch
+### 3. Create the worktree and feature branch
 
-- **Exists locally**: don't recreate. Offer to check it out instead.
-- **Exists on remote but not locally**: check out a local tracking branch off the remote (resumes existing work) rather than branching off integration.
-- **Doesn't exist anywhere**: create it (next step).
-
-### 5. Create the feature branch
-
-Branch off the chosen **remote** integration ref so it starts from the true latest tip:
+Use `wt` to create the worktree and branch off the chosen remote integration ref in one step:
 
 ```bash
-git checkout -b IAEMOD-58792 origin/integration-59.2
+wt switch --create IAEMOD-58792 --base origin/integration-59.2
 ```
 
-Leave the branch **local** — do not push or set upstream.
+`wt` handles worktree creation, directory switching, and any configured project hooks automatically. Because each ticket gets its own worktree, there is no need to check for a dirty working tree — other in-flight work is unaffected.
 
-### 6. Confirm
+### 4. Handle an existing branch
+
+- If `wt switch --create` reports the branch already exists locally, offer to switch to its worktree instead: `wt switch IAEMOD-58792`.
+- If it exists on remote only, switch without `--create` to check out a local tracking branch: `wt switch IAEMOD-58792`.
+
+### 5. Confirm
 
 Print a confirmation showing the branch and its base, e.g.:
 
 ```
-Created IAEMOD-58792 ← origin/integration-59.2
-```
-
-Suggest (but do not run) the push command for when the user is ready:
-
-```
-git push -u origin IAEMOD-58792
+Created worktree for IAEMOD-58792 ← origin/integration-59.2
 ```
