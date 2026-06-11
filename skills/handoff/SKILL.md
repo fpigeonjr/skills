@@ -1,7 +1,8 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document for another agent to pick up.
+description: Compact the current conversation into a handoff document for another agent to pick up. Use when user says "hand this off", "create a handoff", "I need to switch agents", wants to summarize the session for a fresh context, or is ending a session and wants continuity.
 argument-hint: "What will the next session be used for?"
+allowed-tools: Bash, Write
 ---
 
 Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save it to a path produced by `mktemp -t handoff-XXXXXX.md` (read the file before you write to it).

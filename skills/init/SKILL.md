@@ -2,6 +2,7 @@
 name: init
 description: Create or update AGENTS.md for the current repository by exploring the codebase and extracting high-signal guidance for future agent sessions. Use when user wants to initialise a repo for AI agents, create an AGENTS.md, improve an existing one, or says things like "/init", "set up AGENTS.md", or "bootstrap this repo for agents".
 argument-hint: "[focus area or constraints]"
+allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 ---
 
 Create or update `AGENTS.md` for this repository.

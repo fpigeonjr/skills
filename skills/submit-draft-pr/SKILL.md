@@ -22,9 +22,7 @@ If a PR exists, report its URL and state — do not create a duplicate.
 Collect the full scope of changes since the branch diverged from the base:
 
 ```bash
-# Determine base (default: main)
-BASE="${ARGUMENTS:-main}"
-# If ARGUMENTS looks like an issue number (numeric), base is main
+# Base is always main; ARGUMENTS is treated as an issue number, not a branch
 BASE="main"
 
 # All commits on this branch

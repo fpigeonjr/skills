@@ -29,8 +29,8 @@ while true; do
     --jq '{status: .status, conclusion: .conclusion, jobs: [.jobs[] | {name, conclusion, status}]}')
   echo "$STATUS"
 
-  DONE=$(echo "$STATUS" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['status'] in ['completed','failure','cancelled'])")
-  [ "$DONE" = "True" ] && break
+  DONE=$(echo "$STATUS" | jq -r '.status | test("completed|failure|cancelled")')
+  [ "$DONE" = "true" ] && break
 
   echo "Still running — checking again in 60s..."
   sleep 60

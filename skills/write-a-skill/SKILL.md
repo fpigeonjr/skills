@@ -2,6 +2,7 @@
 name: write-a-skill
 description: Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.
 argument-hint: "[skill name or description]"
+allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
 # Writing Skills
@@ -55,7 +56,7 @@ description: Brief description of capability. Use when [specific triggers].
 
 ## Advanced features
 
-[Link to separate files: See [REFERENCE.md](REFERENCE.md)]
+[Link to separate files if needed: See [REFERENCE.md](REFERENCE.md)]
 ```
 
 ## Description Requirements
@@ -116,3 +117,4 @@ After drafting, verify:
 - [ ] Consistent terminology
 - [ ] Concrete examples included
 - [ ] References one level deep
+- [ ] Any linked reference files actually exist in the skill directory

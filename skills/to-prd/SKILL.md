@@ -2,13 +2,14 @@
 name: to-prd
 description: Turn the current conversation context into a PRD and publish it to the project issue tracker. Use when user wants to create a PRD from the current context, write a product requirements document, or formalize a feature spec.
 argument-hint: "[feature or context to document]"
+allowed-tools: Read, Grep, Glob, Bash, Write
 ---
 
 # To PRD
 
 Turn the current conversation context and codebase understanding into a PRD. Do NOT interview the user — just synthesize what you already know.
 
-The issue tracker should have been provided to you via `docs/agents/issue-tracker.md`. If that file doesn't exist in the current project, either run `/setup-matt-pocock-skills` (if installed) or create `docs/agents/issue-tracker.md` manually — see the [GitHub template](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md) as a starting point.
+The issue tracker config should be at `docs/agents/issue-tracker.md` in the current project. If that file doesn't exist, create it — see the [GitHub template](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md) as a starting point.
 
 ## Process
 

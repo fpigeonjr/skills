@@ -81,12 +81,35 @@ gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/comments/$COMMENT_ID/replies \
 
 For comments you declined to adopt, reply with a clear explanation of why the change was not applied.
 
-Resolve each conversation thread only after the push succeeds:
+Resolve each conversation thread after the push succeeds. The GitHub REST API does not expose a thread-resolution endpoint; use the GraphQL API:
 
 ```bash
-gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/reviews/$REVIEW_ID/dismissals \
-  --method PUT --field message="Addressed"
+gh api graphql -f query='
+  mutation ResolveThread($threadId: ID!) {
+    resolveReviewThread(input: {threadId: $threadId}) {
+      thread { isResolved }
+    }
+  }
+' -f threadId="<THREAD_NODE_ID>"
 ```
+
+To get thread node IDs:
+
+```bash
+gh api graphql -f query='
+  query($owner: String!, $repo: String!, $number: Int!) {
+    repository(owner: $owner, name: $repo) {
+      pullRequest(number: $number) {
+        reviewThreads(first: 50) {
+          nodes { id isResolved comments(first: 1) { nodes { body } } }
+        }
+      }
+    }
+  }
+' -f owner="{owner}" -f repo="{repo}" -F number=$PR_NUMBER
+```
+
+If resolving via GraphQL is not practical, note in your reply that the thread can be resolved manually in the browser.
 
 ## Edge Cases
 
