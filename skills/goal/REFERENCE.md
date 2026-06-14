@@ -5,7 +5,7 @@
 ```
 resolve_ac()
   → upfront_approval()        ← interactive, once
-    → autonomous_loop()
+    → implementation_loop()
         while not (all_ac_met AND all_checks_green):
             gap = pick_next_gap(unmet_ac, failing_checks)
             tdd_cycle(gap)           ← delegate to tdd skill
@@ -39,7 +39,7 @@ resolve_ac()
 The `tdd` skill owns the red-green-refactor mechanics. `/goal` owns the outer loop.
 
 - `/goal` does TDD's **planning step once upfront** (interface design, behaviour list, user approval).
-- After approval, `/goal` feeds each gap to the TDD **tracer bullet + incremental loop** autonomously.
+- After approval, `/goal` feeds each gap to the TDD **tracer bullet + incremental loop**, executing the approved plan and checking in when a gap falls outside it.
 - `/goal` enforces: tests use public interfaces only, mock only at system boundaries, never refactor while RED.
 
 ## Guard conditions

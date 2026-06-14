@@ -33,7 +33,7 @@ allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ```
 
 - **Description** is the only field an agent reads when selecting a skill — max 1024 chars, third person, triggers must be explicit.
-- **`SKILL.md` should stay under 100 lines.** Split large content into sibling reference files (e.g., `REFERENCE.md`, `EXAMPLES.md`).
+- **Keep `SKILL.md` as short as the skill allows.** Favour progressive disclosure: split large or rarely-needed content into sibling reference files (e.g., `REFERENCE.md`, `EXAMPLES.md`). There is no hard line limit — brevity is a goal, not a gate.
 - References must be **at most one level deep** from `SKILL.md`.
 - No time-sensitive content in skill files.
 - `disable-model-invocation: true` frontmatter field is valid (used by `zoom-out`); it means the skill body is a direct instruction, not a workflow.
@@ -51,6 +51,8 @@ allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ```
 
 ## Key non-obvious conventions
+
+**CONTEXT.md** (repo root): defines the domain vocabulary for this collection — canonical terms, `_Avoid_` synonyms, relationships, and flagged ambiguities. Read it before editing skills or adding new ones to stay consistent with established language.
 
 **TDD skill** (`skills/tdd/`): tests use public interfaces only — never test internals, never query the DB directly to verify state, mock only at system boundaries (external APIs, DB, time/randomness). Vertical slices: one test → one implementation → repeat. Never refactor while RED.
 

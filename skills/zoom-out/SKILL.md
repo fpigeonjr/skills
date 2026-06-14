@@ -1,6 +1,6 @@
 ---
 name: zoom-out
-description: Tell the agent to zoom out and give broader context or a higher-level perspective. Use when you're unfamiliar with a section of code or need to understand how it fits into the bigger picture.
+description: Map all relevant modules and callers for an unfamiliar area of code, using the project's domain glossary vocabulary. Use when you're unfamiliar with a section of code, need a higher-level perspective, or want to understand how it fits into the bigger picture.
 argument-hint: "[module, file, or concept to zoom out from]"
 disable-model-invocation: true
 ---

@@ -1,13 +1,13 @@
 ---
 name: goal
-description: Drive a single GitHub ticket to completion using an autonomous red-green loop — reads acceptance criteria from the issue, runs TDD cycles until all AC are met and project checks pass, then hands back for manual review before the PR is opened. Use when the user wants to iterate on a ticket until done, mentions "/goal", wants to grind a ticket autonomously, or says things like "work this ticket until it's done" or "keep going until AC pass".
+description: Drive a single GitHub issue to completion through a human-checkpointed red-green loop — reads acceptance criteria from the issue, confirms the test plan and definition of "green" with you upfront, then runs TDD cycles until all AC are met and project checks pass, and hands back for your review before any PR is opened. Use when the user wants to work a ticket to completion, mentions "/goal", or says things like "work this ticket until it's done" or "keep going until AC pass".
 argument-hint: "[issue number or goal description]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
 # Goal
 
-Autonomous single-ticket implementation loop. Drives a ticket from "branch exists" to "AC met + checks green", then stops for your manual review.
+Single-ticket implementation loop, gated by **your approval at the start** and **your review at the end**. Drives a ticket from "branch exists" to "AC met + checks green" — you set the plan, the loop executes it and reports back.
 
 Designed to run **after** `start-ticket` and **before** `submit-draft-pr`.
 
@@ -38,14 +38,15 @@ Present to the user:
 
 **Wait for approval or edits before proceeding.** Do not begin implementation until the user confirms.
 
-### 4. Autonomous loop
+### 4. Implementation loop
 
-Repeat until all AC are met AND all checks pass:
+Repeat until all AC are met AND all checks pass. The plan is fixed by the approval gate in step 3 — the loop executes that plan, it does not silently re-scope it:
 
 1. **Pick the next gap** — one unmet AC item or one failing check
 2. **Implement** — satisfy it via a TDD red→green cycle (delegate to `tdd` skill)
 3. **Re-run checks** relevant to the change
 4. **Re-evaluate AC** — mark an item done only on verifiable evidence (passing test, observable behaviour). Never self-certify.
+5. **Surface, don't grind** — if a gap can't be closed within the approved plan (new ambiguity, an AC that needs reinterpreting, a design choice the plan didn't cover), stop and check in rather than improvising scope.
 
 ### 5. Exit
 

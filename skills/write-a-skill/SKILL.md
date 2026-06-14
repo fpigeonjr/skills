@@ -103,7 +103,7 @@ Scripts save tokens and improve reliability vs generated code.
 
 Split into separate files when:
 
-- SKILL.md exceeds 100 lines
+- SKILL.md is getting long enough that the core workflow is hard to find
 - Content has distinct domains (finance vs sales schemas)
 - Advanced features are rarely needed
 
@@ -112,7 +112,7 @@ Split into separate files when:
 After drafting, verify:
 
 - [ ] Description includes triggers ("Use when...")
-- [ ] SKILL.md under 100 lines
+- [ ] SKILL.md stays focused on the core workflow; bulky detail is split out
 - [ ] No time-sensitive info
 - [ ] Consistent terminology
 - [ ] Concrete examples included
