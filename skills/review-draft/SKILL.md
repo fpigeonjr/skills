@@ -1,13 +1,13 @@
 ---
 name: review-draft
-description: Review a pull request and produce a draft review for a human to read and post. Does not submit anything. Surfaces concrete bugs, regressions, risks, and missing tests. Ends with a clear Approve or Request Changes recommendation. Use when the user wants a code review drafted, wants to review a PR before posting, or says things like "draft a review", "review this PR", or "write up a review for me to post".
+description: Review a pull request, produce a draft review for human approval, then post the approved review to GitHub. Surfaces concrete bugs, regressions, risks, and missing tests. Ends with a clear Approve or Request Changes recommendation. Use when the user wants a code review drafted and submitted after approval, wants to review a PR before posting, or says things like "draft a review", "review this PR", or "write up a review for me to post".
 argument-hint: "[PR URL or number]"
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Review Draft
 
-Produce a thorough code review for a human to read and decide whether to post. Do not submit, comment, or post anything to GitHub.
+Produce a thorough code review for a human to read and approve. After the human approves the draft, post the approved review to GitHub.
 
 ## Identify the PR
 
@@ -90,8 +90,28 @@ End with one of:
 
 > **🔄 Request Changes** — list the specific blocking issues that must be resolved.
 
+## Approval Gate
+
+Present the full review as a formatted markdown document for the human to inspect. Do not post it yet.
+
+Ask the human to approve, edit, or reject the draft. Only post the review after the human explicitly approves the exact review body and recommendation to submit.
+
+## Post the Approved Review
+
+After approval, save the review body to a temporary file and submit it with the matching recommendation:
+
+```bash
+# For an Approve recommendation
+gh pr review $PR --approve --body-file /tmp/review.md
+
+# For a Request Changes recommendation
+gh pr review $PR --request-changes --body-file /tmp/review.md
+```
+
+If the human asks for edits before approval, revise the draft and repeat the approval gate.
+
 ## Output Format
 
-Present the full review as a formatted markdown document the human can copy, edit, and post. Include a note at the end:
+Present the draft review as markdown. Include a note at the end:
 
-> _This review was drafted by your coding agent. Review and edit before posting._
+> _This review was drafted by your coding agent. Approve it to have the agent post it to GitHub._
