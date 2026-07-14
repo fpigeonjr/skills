@@ -41,18 +41,19 @@ For a follow-up review, provide the prior review findings as additional context.
 
 ## Write the Review
 
-Structure the review as follows:
+Read [REVIEW-FORMAT.md](REVIEW-FORMAT.md) and use it to turn the `code-review` output into a human-readable PR review.
 
-### Summary
-One paragraph: what the PR does at a high level.
+The posted review is not a raw dump of the three review axes. Preserve each finding's axis as metadata, but organize the GitHub body by what the author needs to do:
 
-### Findings
+1. **Must fix before merge** - blocking findings only.
+2. **Should verify before merge** - important non-blocking findings and intent checks.
+3. **Suggestions and notes** - suggestions, smells, confirmations, skipped axes, and no-finding notes in a collapsed `<details>` block.
 
-Preserve the review's three sections: Correctness, Standards, and Spec. Include each finding's file and line, severity, impact, evidence, and focused remediation. Omit empty sections from the GitHub body unless the absence is important context.
+Start with a short verdict/TL;DR, then summarize what changed, then list findings by the hierarchy above. Put the final recommendation at the end.
+
+Every finding must include a short title, file and line, severity, impact, evidence, and focused remediation. Omit empty sections unless the absence is important context.
 
 Do not promote code-smell judgments into blocking findings unless a documented repository standard independently makes them blocking.
-
-### Recommendation
 
 End with one of:
 
