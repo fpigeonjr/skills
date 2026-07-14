@@ -242,6 +242,24 @@ Group by actionability before axis:
 
 Preserve each finding's review axis (`Correctness`, `Standards`, `Spec`) as compact metadata on the finding line. Do not use the axes as the top-level PR review structure.
 
+## Copilot code review deltas
+
+GitHub Copilot code review is useful prior art, but `review-draft` should be more explicit about verdict and hierarchy.
+
+Borrow these patterns from Copilot reviews:
+
+- Keep feedback concrete and tied to changed code.
+- Prefer small, actionable comments over broad observations.
+- Include focused suggested fixes whenever the remediation is clear.
+- Treat review comments as normal GitHub review conversations that humans can reply to and resolve.
+
+Differentiate `review-draft` from Copilot reviews:
+
+- Copilot always leaves a **Comment** review; `review-draft` may submit ✅ Approve or 🔄 Request Changes after human approval.
+- Copilot feedback often appears as inline comments; `review-draft` currently posts a top-level review body, so the body must summarize priority and next actions clearly.
+- Copilot can provide one-click suggested changes in inline comments. Do not put GitHub ```suggestion fences in the top-level review body because they will not be applyable there. If `review-draft` later supports inline review comments, use suggestion fences only for small, directly replaceable code changes.
+- Copilot may repeat comments on re-review; follow-up `review-draft` output should use `### Since the last review` to separate resolved, still-open, and new findings.
+
 ## GFM components to use
 
 ### Tables
