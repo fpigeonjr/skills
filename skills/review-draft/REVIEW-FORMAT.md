@@ -120,6 +120,8 @@ Focused remediation.
 ### Recommendation
 
 **✅ Approve** — no blocking findings remain.
+
+_This review was drafted by @<github-login>'s coding agent._
 ```
 
 ## Rendered example
@@ -213,6 +215,8 @@ Extract the shared security-context lookup or have one method delegate to the ot
 ### Recommendation
 
 **✅ Approve** — no blocking findings remain.
+
+_This review was drafted by @fpigeonjr's coding agent._
 
 ## Hierarchy rules
 
@@ -339,6 +343,16 @@ Only include categories that exist. Keep the rest of the review focused on curre
 - If there are no suggestions or notes, omit the `<details>` block.
 - If the Spec axis was skipped, mention that once in `🔵 Suggestions and notes` with the reason.
 - Do not include “no finding” items in the main findings lists.
+
+## Attribution footer
+
+Resolve the authenticated GitHub login with `gh api user --jq '.login'` and end every draft with:
+
+```markdown
+_This review was drafted by @<github-login>'s coding agent._
+```
+
+Do not hard-code the login except in rendered examples.
 
 ## Tone
 

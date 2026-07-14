@@ -65,6 +65,16 @@ End with one of:
 
 Suggestions alone do not justify Request Changes.
 
+## Reviewer Attribution
+
+Resolve the authenticated GitHub login before presenting or posting a draft:
+
+```bash
+gh api user --jq '.login'
+```
+
+Use that login in the footer as `@<login>` so the review identifies whose coding agent drafted it.
+
 ## Approval Gate
 
 Present the full review as a formatted markdown document for the human to inspect. Do not post it yet.
@@ -89,4 +99,4 @@ If the human asks for edits before approval, revise the draft and repeat the app
 
 Present the draft review as markdown. Include a note at the end:
 
-> _This review was drafted by your coding agent. Approve it to have the agent post it to GitHub._
+> _This review was drafted by @<github-login>'s coding agent. Approve it to have the agent post it to GitHub._
