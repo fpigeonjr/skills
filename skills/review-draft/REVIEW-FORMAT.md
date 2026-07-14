@@ -121,7 +121,7 @@ Focused remediation.
 
 **✅ Approve** — no blocking findings remain.
 
-_This review was drafted by @<github-login>'s coding agent._
+> This review was drafted by @<github-login>'s coding agent.
 ```
 
 ## Rendered example
@@ -216,7 +216,7 @@ Extract the shared security-context lookup or have one method delegate to the ot
 
 **✅ Approve** — no blocking findings remain.
 
-_This review was drafted by @fpigeonjr's coding agent._
+> This review was drafted by @fpigeonjr's coding agent.
 
 ## Hierarchy rules
 
@@ -349,7 +349,7 @@ Only include categories that exist. Keep the rest of the review focused on curre
 Resolve the authenticated GitHub login with `gh api user --jq '.login'` and end every draft with:
 
 ```markdown
-_This review was drafted by @<github-login>'s coding agent._
+> This review was drafted by @<github-login>'s coding agent.
 ```
 
 Do not hard-code the login except in rendered examples.
