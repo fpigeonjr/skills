@@ -71,7 +71,7 @@ Resolve the authenticated GitHub login before presenting or posting a draft:
 gh api user --jq '.login'
 ```
 
-Use that login in a blockquote footer as `@<login>` so the review identifies whose coding agent drafted it.
+Use that login in a blockquote footer as `@<github-login>` so the review identifies whose coding agent drafted it.
 
 ## Approval Gate
 

@@ -130,7 +130,7 @@ No blocking findings.
 
 #### 1. Confirm remaining unauthenticated paths should now return 401
 
-`ContentUtils.getLoggedInUserDetails()` · 🟡 **Risk** · **Correctness** · **important**
+`ContentUtils.java:129` · 🟡 **Risk** · **Correctness** · **important**
 
 > [!WARNING]
 > This is a behavior change across multiple endpoints. It appears intentional, but should be explicitly confirmed before merge.
@@ -232,7 +232,7 @@ Differentiate `review-draft` from Copilot reviews:
 
 - Copilot always leaves a **Comment** review; `review-draft` may submit ✅ Approve or 🔄 Request Changes after human approval.
 - Copilot feedback often appears as inline comments; `review-draft` currently posts a top-level review body, so the body must summarize priority and next actions clearly.
-- Copilot can provide one-click suggested changes in inline comments. Do not put GitHub ```suggestion fences in the top-level review body because they will not be applyable there. If `review-draft` later supports inline review comments, use suggestion fences only for small, directly replaceable code changes.
+- Copilot can provide one-click suggested changes in inline comments. Do not put a `suggestion` code fence in the top-level review body because it will not be applicable there. If `review-draft` later supports inline review comments, use `suggestion` fences only for small, directly replaceable code changes.
 - Copilot may repeat comments on re-review; follow-up `review-draft` output should use `### Since the last review` to separate resolved, still-open, and new findings.
 
 ## GFM components to use
