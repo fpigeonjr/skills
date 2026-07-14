@@ -50,6 +50,12 @@ Use this copyable skeleton for real PR reviews. Replace placeholders and omit em
 - Short, reviewer-friendly summary of area 1.
 - Short, reviewer-friendly summary of area 2.
 
+### Reviewed files
+
+| File | Why it mattered |
+| --- | --- |
+| `path/to/file.ext` | Short description of the changed area. |
+
 ### Since the last review
 
 | Status | Finding | Notes |
@@ -106,6 +112,9 @@ Focused remediation.
 **Why it matters:**
 Concrete impact in one or two sentences.
 
+**Evidence:**
+Specific observed behavior, code path, standard, or spec text.
+
 **Suggested fix:**
 Focused remediation.
 
@@ -149,6 +158,14 @@ This section intentionally renders the GitHub-flavored Markdown components so re
 - Changed unauthenticated user lookup from null-returning to 401-throwing behavior.
 - Added the safe lookup helper for call sites that still need null-tolerant behavior.
 
+### Reviewed files
+
+| File | Why it mattered |
+| --- | --- |
+| `ContentUtils.java` | Changes unauthenticated user lookup behavior and adds the safe helper. |
+| `ServiceExceptionHandler.java` | Maps the new unauthenticated exception to HTTP 401 and logs it. |
+| `V55.2.1__IAEMOD-integrity-records-roles.sql` | Adds the integrity-records function, permissions, role, and mappings. |
+
 ### Action checklist
 
 - [ ] Verify the remaining unauthenticated call sites should now return 401.
@@ -191,6 +208,12 @@ Confirm 401 is intended for these paths. If it is, remove the dead null-fallback
 **Why it matters:**
 The SLF4J call has one `{}` placeholder but passes two values, so the exception message is not logged as intended.
 
+**Evidence:**
+
+```java
+LOGGER.info("{} UnauthenticatedAccessException:", SERVICE_NAME, exception.getMessage())
+```
+
 **Suggested fix:**
 Add a second `{}` placeholder or pass the exception object as the trailing argument.
 
@@ -200,6 +223,9 @@ Add a second `{}` placeholder or pass the exception object as the trailing argum
 
 **Why it matters:**
 `getLoggedInUserDetails()` and `getLoggedInUserDetailsSafe()` are nearly identical except for the terminal null-vs-throw behavior.
+
+**Evidence:**
+Both helpers perform the same security-context extraction and differ only in whether the unauthenticated terminal path throws or returns `null`.
 
 **Suggested fix:**
 Extract the shared security-context lookup or have one method delegate to the other.
@@ -227,12 +253,13 @@ Use this visible hierarchy in the posted PR review:
 3. Optional GFM alert for the single most important next step.
 4. `### TL;DR`
 5. `### What changed`
-6. Optional `### Since the last review` for follow-up reviews.
-7. `### Action checklist`
-8. `### Must fix before merge`
-9. `### Should verify before merge`
-10. Collapsed `<details>` for `🔵 Suggestions and notes`.
-11. `### Recommendation`
+6. Optional `### Reviewed files` table for non-trivial PRs.
+7. Optional `### Since the last review` for follow-up reviews.
+8. `### Action checklist`
+9. `### Must fix before merge`
+10. `### Should verify before merge`
+11. Collapsed `<details>` for `🔵 Suggestions and notes`.
+12. `### Recommendation`
 
 Group by actionability before axis:
 
@@ -248,6 +275,8 @@ GitHub Copilot code review is useful prior art, but `review-draft` should be mor
 
 Borrow these patterns from Copilot reviews:
 
+- Start with a concise pull request overview before detailed findings.
+- Include a compact `Reviewed files` table when it helps the author understand review coverage.
 - Keep feedback concrete and tied to changed code.
 - Prefer small, actionable comments over broad observations.
 - Include focused suggested fixes whenever the remediation is clear.
@@ -267,6 +296,7 @@ Differentiate `review-draft` from Copilot reviews:
 Use tables for compact summaries and side-by-side comparisons. Good uses:
 
 - Review result and severity counts.
+- Reviewed files and why each file mattered.
 - Before/after behavior.
 - Affected endpoints or files.
 - Follow-up review status.
