@@ -51,15 +51,17 @@ The posted review is not a raw dump of the three review axes. Preserve each find
 
 Start with a short verdict/TL;DR, then summarize what changed, then list findings by the hierarchy above. Put the final recommendation at the end.
 
-Every finding must include a short title, file and line, severity, impact, evidence, and focused remediation. Omit empty sections unless the absence is important context.
+Every finding must include a short title, file and line, emoji severity label, review axis, blocking/important/suggestion severity, impact, evidence, and focused remediation. Omit empty sections unless the absence is important context.
+
+Use the reference's labels consistently: 🔴 Bug, 🟡 Risk, 🟠 Missing test, and 🔵 Suggestion. End with ✅ Approve or 🔄 Request Changes.
 
 Do not promote code-smell judgments into blocking findings unless a documented repository standard independently makes them blocking.
 
 End with one of:
 
-> **Approve** - no blocking correctness, standards, or spec findings remain.
+> **✅ Approve** - no blocking correctness, standards, or spec findings remain.
 
-> **Request Changes** - list the specific blocking findings that must be resolved.
+> **🔄 Request Changes** - list the specific blocking findings that must be resolved.
 
 Suggestions alone do not justify Request Changes.
 

@@ -5,21 +5,135 @@ Use this format when converting a `code-review` output into the GitHub PR review
 ## Principles
 
 - **Author-first hierarchy:** organize by actionability before review taxonomy.
-- **GitHub-native UX:** use GFM tables, task lists, alerts, and `<details>` blocks when they make the review easier to scan.
+- **GitHub-native UX:** use GFM tables, task lists, alerts, emoji labels, and `<details>` blocks when they make the review easier to scan.
 - **Progressive disclosure:** keep the main body short; hide confirmations, no-finding notes, and optional suggestions behind collapsible sections.
-- **One finding, one decision:** every visible finding should make clear whether it blocks merge, needs verification, or is optional.
+- **One finding, one decision:** every visible finding should make clear whether it blocks merge, needs verification, needs a test, or is optional.
 
-## Template
+## Severity and verdict labels
+
+Use color and icon labels consistently. Keep the underlying `code-review` severity, but translate it into reviewer-friendly labels in the GitHub body.
+
+| Label | Use for | Usually maps to |
+| --- | --- | --- |
+| 🔴 **Bug** | Concrete bug, regression, broken behavior, security flaw, or data-integrity issue. | `blocking` or `important` |
+| 🟡 **Risk** | Risky behavior change, security/data/performance risk, or intent that needs confirmation. | `important` |
+| 🟠 **Missing test** | Changed behavior that lacks meaningful regression or acceptance coverage. | `blocking` or `important` |
+| 🔵 **Suggestion** | Clarity, maintainability, style, docs, or non-blocking smell feedback. | `suggestion` |
+
+Recommendation labels:
+
+- **✅ Approve** — no blocking findings remain; include the reason in one sentence.
+- **🔄 Request Changes** — list the specific blocking issues that must be resolved.
+
+## Skeleton
+
+Use this copyable skeleton for real PR reviews. Replace placeholders and omit empty optional sections.
 
 ```markdown
-## Review: Approve | Request Changes
+## Review: ✅ Approve | 🔄 Request Changes
 
-| Result | Blocking | Needs verification | Suggestions |
-| --- | ---: | ---: | ---: |
-| Approve | 0 | 1 | 2 |
+| Result | 🔴 Bugs | 🟡 Risks | 🟠 Missing tests | 🔵 Suggestions |
+| --- | ---: | ---: | ---: | ---: |
+| ✅ Approve | 0 | 0 | 0 | 0 |
 
 > [!IMPORTANT]
-> **Next step:** Confirm the unauthenticated paths below should now return 401. No blocking changes requested.
+> **Next step:** One sentence describing the most important author action, or omit this alert when there is no notable next step.
+
+### TL;DR
+
+- One sentence on the overall state of the PR.
+- One sentence on the highest-risk area, if any.
+- One sentence on what the author should do next.
+
+### What changed
+
+- Short, reviewer-friendly summary of area 1.
+- Short, reviewer-friendly summary of area 2.
+
+### Since the last review
+
+| Status | Finding | Notes |
+| --- | --- | --- |
+| Resolved | Previous finding title | What changed |
+| Still open | Previous finding title | What remains |
+| New | New finding title | Why it matters |
+
+### Action checklist
+
+- [ ] Concrete author action or acknowledgement.
+- [ ] Another concrete author action.
+
+### Must fix before merge
+
+#### 1. Short finding title
+
+`path/to/file.ext:123` · 🔴 **Bug** · **Correctness** · **blocking**
+
+**Why it matters:**
+Concrete impact in one or two sentences.
+
+**Evidence:**
+Specific observed behavior, code path, standard, or spec text.
+
+**Suggested fix:**
+Focused remediation.
+
+### Should verify before merge
+
+#### 2. Short finding title
+
+`path/to/file.ext:456` · 🟡 **Risk** · **Spec** · **important**
+
+> [!WARNING]
+> Optional one-sentence risk callout for high-impact non-blocking findings.
+
+**Why it matters:**
+Concrete impact in one or two sentences.
+
+**Evidence:**
+Specific observed behavior, code path, standard, or spec text.
+
+**Suggested fix:**
+Focused remediation.
+
+<details>
+<summary>🔵 Suggestions and notes</summary>
+
+#### 3. Short finding title
+
+`path/to/file.ext:789` · 🔵 **Suggestion** · **Standards** · **suggestion**
+
+**Why it matters:**
+Concrete impact in one or two sentences.
+
+**Suggested fix:**
+Focused remediation.
+
+#### Additional review notes
+
+- Correctness: no additional findings.
+- Standards: no documented-standard violations.
+- Spec: no missing or out-of-scope behavior identified.
+
+</details>
+
+### Recommendation
+
+**✅ Approve** — no blocking findings remain.
+```
+
+## Rendered example
+
+This section intentionally renders the GitHub-flavored Markdown components so reviewers can inspect the UX directly in GitHub.
+
+## Review: ✅ Approve
+
+| Result | 🔴 Bugs | 🟡 Risks | 🟠 Missing tests | 🔵 Suggestions |
+| --- | ---: | ---: | ---: | ---: |
+| ✅ Approve | 0 | 1 | 0 | 2 |
+
+> [!IMPORTANT]
+> **Next step:** Confirm the remaining unauthenticated paths should now return 401. No blocking changes requested.
 
 ### TL;DR
 
@@ -47,7 +161,7 @@ No blocking findings.
 
 #### 1. Confirm remaining unauthenticated paths should now return 401
 
-`ContentUtils.getLoggedInUserDetails()` · **Correctness** · **important**
+`ContentUtils.getLoggedInUserDetails()` · 🟡 **Risk** · **Correctness** · **important**
 
 > [!WARNING]
 > This is a behavior change across multiple endpoints. It appears intentional, but should be explicitly confirmed before merge.
@@ -66,11 +180,11 @@ Several call sites still contain null-fallback branches that are now unreachable
 Confirm 401 is intended for these paths. If it is, remove the dead null-fallback branches in a follow-up or in this PR so the code reflects the new contract.
 
 <details>
-<summary>Suggestions and notes</summary>
+<summary>🔵 Suggestions and notes</summary>
 
 #### 2. Preserve the unauthenticated exception message in logs
 
-`ServiceExceptionHandler.java:167` · **Correctness** · **suggestion**
+`ServiceExceptionHandler.java:167` · 🔵 **Suggestion** · **Correctness** · **suggestion**
 
 **Why it matters:**
 The SLF4J call has one `{}` placeholder but passes two values, so the exception message is not logged as intended.
@@ -80,7 +194,7 @@ Add a second `{}` placeholder or pass the exception object as the trailing argum
 
 #### 3. Consider de-duplicating user lookup logic
 
-`ContentUtils.java` · **Standards** · **suggestion**
+`ContentUtils.java` · 🔵 **Suggestion** · **Standards** · **suggestion**
 
 **Why it matters:**
 `getLoggedInUserDetails()` and `getLoggedInUserDetailsSafe()` are nearly identical except for the terminal null-vs-throw behavior.
@@ -98,15 +212,14 @@ Extract the shared security-context lookup or have one method delegate to the ot
 
 ### Recommendation
 
-**Approve** — no blocking findings remain.
-```
+**✅ Approve** — no blocking findings remain.
 
 ## Hierarchy rules
 
 Use this visible hierarchy in the posted PR review:
 
-1. `## Review: <verdict>`
-2. Summary table with counts.
+1. `## Review: ✅ Approve` or `## Review: 🔄 Request Changes`
+2. Summary table with emoji severity counts.
 3. Optional GFM alert for the single most important next step.
 4. `### TL;DR`
 5. `### What changed`
@@ -114,12 +227,12 @@ Use this visible hierarchy in the posted PR review:
 7. `### Action checklist`
 8. `### Must fix before merge`
 9. `### Should verify before merge`
-10. Collapsed `<details>` for `Suggestions and notes`.
+10. Collapsed `<details>` for `🔵 Suggestions and notes`.
 11. `### Recommendation`
 
 Group by actionability before axis:
 
-- **Must fix before merge** — blocking findings only. These justify Request Changes.
+- **Must fix before merge** — blocking findings only. These justify 🔄 Request Changes.
 - **Should verify before merge** — important findings, intent checks, and behavior changes that do not justify Request Changes alone.
 - **Suggestions and notes** — suggestions, smell findings, confirmations, skipped axes, and no-finding notes.
 
@@ -131,7 +244,7 @@ Preserve each finding's review axis (`Correctness`, `Standards`, `Spec`) as comp
 
 Use tables for compact summaries and side-by-side comparisons. Good uses:
 
-- Review result/counts.
+- Review result and severity counts.
 - Before/after behavior.
 - Affected endpoints or files.
 - Follow-up review status.
@@ -163,7 +276,7 @@ Do not stack multiple alerts in a row. If everything is highlighted, nothing is 
 
 Use `<details>` for lower-priority material:
 
-- Suggestions.
+- 🔵 Suggestions.
 - No-finding notes.
 - Evidence that is useful but lengthy.
 - Prior-review resolution detail.
@@ -172,7 +285,7 @@ The summary line should tell the reader exactly what is inside.
 
 ```markdown
 <details>
-<summary>Suggestions and notes</summary>
+<summary>🔵 Suggestions and notes</summary>
 
 ...
 
@@ -186,7 +299,7 @@ Each finding should be self-contained:
 ```markdown
 #### N. Short finding title
 
-`path/to/file.ext:123` · **Correctness** · **blocking|important|suggestion**
+`path/to/file.ext:123` · 🔴 **Bug** · **Correctness** · **blocking**
 
 > [!WARNING]
 > Optional one-sentence risk callout for high-impact non-blocking findings.
@@ -212,9 +325,9 @@ For follow-up PR reviews, add this section after `### What changed`:
 
 | Status | Finding | Notes |
 | --- | --- | --- |
-| Resolved | Missing auth regression test | Added coverage in `...` |
-| Still open | 401 behavior verification | Still needs author confirmation |
-| New | Log message placeholder mismatch | Introduced in latest commit |
+| ✅ Resolved | Missing auth regression test | Added coverage in `...` |
+| 🔄 Still open | 401 behavior verification | Still needs author confirmation |
+| 🆕 New | Log message placeholder mismatch | Introduced in latest commit |
 ```
 
 Only include categories that exist. Keep the rest of the review focused on current state, not review history.
@@ -224,7 +337,7 @@ Only include categories that exist. Keep the rest of the review focused on curre
 - If there are no blocking findings, write `No blocking findings.` under `Must fix before merge`.
 - If there are no important findings, omit `Should verify before merge`.
 - If there are no suggestions or notes, omit the `<details>` block.
-- If the Spec axis was skipped, mention that once in `Suggestions and notes` with the reason.
+- If the Spec axis was skipped, mention that once in `🔵 Suggestions and notes` with the reason.
 - Do not include “no finding” items in the main findings lists.
 
 ## Tone
