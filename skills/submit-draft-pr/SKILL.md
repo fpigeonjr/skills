@@ -1,7 +1,7 @@
 ---
 name: submit-draft-pr
 description: Create a draft GitHub pull request with the repo's PR template fully populated. Analyzes the branch diff, fills every template section, applies labels, and assigns the PR to the authenticated user. Use when the user wants to open a PR, create a pull request, submit their branch for review, or says things like "make a PR", "open a PR", "submit this for review", or "I'm ready to create a pull request".
-argument-hint: "[issue-number]"
+argument-hint: "[issue-number] [--base base-branch]"
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -19,11 +19,25 @@ If a PR exists, report its URL and state — do not create a duplicate.
 
 ## Gather Branch Context
 
-Collect the full scope of changes since the branch diverged from the base:
+Collect the full scope of changes since the branch diverged from the base. If `$ARGUMENTS` includes `--base <branch>`, use that branch as the PR base. Otherwise use the repo default branch:
 
 ```bash
-# Base is always main; ARGUMENTS is treated as an issue number, not a branch
-BASE="main"
+# Optional: parse --base <branch> from ARGUMENTS; ARGUMENTS may also include an issue number
+BASE="$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')"
+
+# If the user provided --base, override BASE with that branch
+# Example parser for shell workflows:
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --base)
+      BASE="$2"
+      shift 2
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
 
 # All commits on this branch
 git log "$BASE"..HEAD --oneline
@@ -60,7 +74,7 @@ Fill **every section** of the template. Do not submit a blank or partially fille
 
 **What changed** — high-level summary of what the PR does and why, followed by a breakdown by file or area. Focus on *what* changed and *why*, not line-by-line narration.
 
-**Issue / Closes** — if `$ARGUMENTS` is a numeric issue number, append `Closes #$ARGUMENTS` in the linked issues section (or at the end if no such section exists).
+**Issue / Closes** — if `$ARGUMENTS` includes a numeric issue number, append `Closes #<issue-number>` in the linked issues section (or at the end if no such section exists). Ignore `--base <branch>` when extracting the issue number.
 
 **How to test** — concrete, actionable steps a reviewer can follow to verify the change. Include specific test commands. If there are UI changes, include manual verification steps too.
 
@@ -84,11 +98,12 @@ Skip labeling if the right labels cannot be determined with confidence.
 
 Extract a short PR title (under 70 characters) from the changes.
 
-Confirm with the user before creating — show the title and a brief summary of what the body will contain. Ask "Ready to create?"
+Confirm with the user before creating — show the base branch, title, and a brief summary of what the body will contain. Ask "Ready to create?"
 
 ```bash
 gh pr create \
   --draft \
+  --base "$BASE" \
   --title "the pr title" \
   --assignee "@me" \
   --body "$(cat <<'EOF'
