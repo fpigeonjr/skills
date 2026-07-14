@@ -60,10 +60,12 @@ allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 
 **submit-draft-pr skill**: After creating the PR, always print a manual action note — Copilot reviews cannot be requested via the API.
 
+**code-review / review-draft split**: `code-review` is side-effect-free analysis along independent Correctness, Standards, and Spec axes; it never posts or collapses the axes into one verdict. `review-draft` is the GitHub wrapper that converts those findings into Approve or Request Changes, requires exact human approval, and only then posts the PR review.
+
 **to-prd skill**: Requires `docs/agents/issue-tracker.md` to exist in the target project before publishing.
 
 **to-issues skill**: Issues are typed as HITL (human-in-the-loop) or AFK (fully automated). Publish in dependency order so real issue IDs can be referenced in "Blocked by" fields.
 
 ## Credits
 
-`tdd`, `grill-me`, `grill-with-docs`, `zoom-out`, `handoff`, `to-issues`, `to-prd`, and `write-a-skill` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). Skills conform to the [Agent Skills standard](https://agentskills.io/specification).
+`code-review`, `tdd`, `grill-me`, `grill-with-docs`, `zoom-out`, `handoff`, `to-issues`, `to-prd`, and `write-a-skill` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). Skills conform to the [Agent Skills standard](https://agentskills.io/specification).

@@ -1,13 +1,13 @@
 ---
 name: review-draft
-description: Review a pull request, produce a draft review for human approval, then post the approved review to GitHub. Surfaces concrete bugs, regressions, risks, and missing tests. Ends with a clear Approve or Request Changes recommendation. Use when the user wants a code review drafted and submitted after approval, wants to review a PR before posting, or says things like "draft a review", "review this PR", or "write up a review for me to post".
+description: Turns a code review into a GitHub PR review, presents it for exact human approval, and posts it only after approval. Use when the user wants to draft and submit a PR review, approve or request changes on GitHub, or says "write up a review for me to post".
 argument-hint: "[PR URL or number]"
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Review Draft
 
-Produce a thorough code review for a human to read and approve. After the human approves the draft, post the approved review to GitHub.
+GitHub publishing wrapper for the `code-review` skill. Identify the PR, run the review, turn its findings into an Approve or Request Changes draft, and post only the exact text the human approves.
 
 ## Identify the PR
 
@@ -33,31 +33,11 @@ If prior reviews exist, treat this as a **follow-up review**:
 - Verify whether they were addressed in new commits
 - Focus on what changed since the last review
 
-## Gather the Diff
+## Run the Code Review
 
-```bash
-# PR metadata
-gh pr view $PR --json title,body,additions,deletions,changedFiles
+Run the `code-review` skill with the PR as its review target. It owns diff collection and the independent Correctness, Standards, and Spec passes.
 
-# Full diff
-gh pr diff $PR
-
-# Commits on this branch
-gh pr view $PR --json commits --jq '.commits[] | {oid, messageHeadline}'
-```
-
-Read the full diff before writing any review comments.
-
-## Explore Relevant Context
-
-For non-trivial changes, read the files being modified to understand the surrounding code:
-
-```bash
-# View full file for context around changed sections
-gh api repos/{owner}/{repo}/contents/{path}?ref={head-sha} --jq '.content' | base64 -d
-```
-
-Look for: existing tests, related modules, interface contracts, documentation.
+For a follow-up review, provide the prior review findings as additional context. Verify each prior concern against the new commits and distinguish resolved findings from findings that remain. Still inspect the complete current diff for regressions and new issues.
 
 ## Write the Review
 
@@ -68,27 +48,19 @@ One paragraph: what the PR does at a high level.
 
 ### Findings
 
-For each finding, include:
-- **File and line reference** (e.g. `src/api/orders.py:42`)
-- **Severity**: 🔴 Bug / 🟡 Risk / 🟠 Missing test / 🔵 Suggestion
-- **Description**: what the problem is and why it matters
-- **Suggested fix** (when applicable)
+Preserve the review's three sections: Correctness, Standards, and Spec. Include each finding's file and line, severity, impact, evidence, and focused remediation. Omit empty sections from the GitHub body unless the absence is important context.
 
-Prioritize in this order:
-1. 🔴 Concrete bugs or regressions
-2. 🟡 Risks (security, data integrity, performance)
-3. 🟠 Missing or inadequate tests for changed behavior
-4. 🔵 Suggestions (style, clarity, minor improvements)
-
-Only include 🔵 suggestions if there are no higher-severity findings, or if they are genuinely important.
+Do not promote code-smell judgments into blocking findings unless a documented repository standard independently makes them blocking.
 
 ### Recommendation
 
 End with one of:
 
-> **✅ Approve** — reason in one sentence.
+> **Approve** - no blocking correctness, standards, or spec findings remain.
 
-> **🔄 Request Changes** — list the specific blocking issues that must be resolved.
+> **Request Changes** - list the specific blocking findings that must be resolved.
+
+Suggestions alone do not justify Request Changes.
 
 ## Approval Gate
 
@@ -98,14 +70,14 @@ Ask the human to approve, edit, or reject the draft. Only post the review after 
 
 ## Post the Approved Review
 
-After approval, save the review body to a temporary file and submit it with the matching recommendation:
+After approval, save the exact approved review body to a temporary file and submit it with the matching recommendation:
 
 ```bash
-# For an Approve recommendation
-gh pr review $PR --approve --body-file /tmp/review.md
+REVIEW_FILE=$(mktemp -t review-draft-XXXXXX.md)
 
-# For a Request Changes recommendation
-gh pr review $PR --request-changes --body-file /tmp/review.md
+# Use exactly one after writing the approved body to $REVIEW_FILE
+gh pr review $PR --approve --body-file "$REVIEW_FILE"
+gh pr review $PR --request-changes --body-file "$REVIEW_FILE"
 ```
 
 If the human asks for edits before approval, revise the draft and repeat the approval gate.

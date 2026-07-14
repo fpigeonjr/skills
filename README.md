@@ -42,7 +42,8 @@ Add to `~/.config/opencode/opencode.json`:
 | [`monitor-ci`](skills/monitor-ci/SKILL.md) | Check or poll GitHub Actions CI — instant snapshot, run polling, or E2E-specific monitoring. |
 | [`submit-draft-pr`](skills/submit-draft-pr/SKILL.md) | Create a draft PR with the repo's template fully populated, labels applied, and PR assigned to you. |
 | [`release-pr`](skills/release-pr/SKILL.md) | Poll CI on a draft PR until all checks pass, then convert it to ready-for-review. |
-| [`review-draft`](skills/review-draft/SKILL.md) | Draft a thorough code review for a human to read and post — never submits anything automatically. |
+| [`code-review`](skills/code-review/SKILL.md) | Review any diff independently for correctness, repository standards, and fidelity to its originating spec. |
+| [`review-draft`](skills/review-draft/SKILL.md) | Turn a code review into a GitHub PR review, require exact human approval, then post it. |
 | [`tdd`](skills/tdd/SKILL.md) | Test-driven development with red-green-refactor loop, vertical slices, and behavior-focused tests. |
 | [`grill-me`](skills/grill-me/SKILL.md) | Interview-style session that stress-tests a plan, resolving each branch of the decision tree one question at a time. |
 | [`grill-with-docs`](skills/grill-with-docs/SKILL.md) | Like `grill-me`, but challenges your plan against the existing domain model and updates `CONTEXT.md` and ADRs inline. |
@@ -58,6 +59,6 @@ Add to `~/.config/opencode/opencode.json`:
 
 ## Credits
 
-`tdd`, `grill-me`, `grill-with-docs`, `zoom-out`, `handoff`, `to-issues`, `to-prd`, and `write-a-skill` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) and used under the MIT License.
+`code-review`, `tdd`, `grill-me`, `grill-with-docs`, `zoom-out`, `handoff`, `to-issues`, `to-prd`, and `write-a-skill` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) and used under the MIT License.
 
 Skills conform to the [Agent Skills standard](https://agentskills.io/specification).
