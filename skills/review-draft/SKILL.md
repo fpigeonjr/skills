@@ -43,17 +43,15 @@ For a follow-up review, provide the prior review findings as additional context.
 
 Read [REVIEW-FORMAT.md](REVIEW-FORMAT.md) and use it to turn the `code-review` output into a human-readable PR review.
 
-The posted review is not a raw dump of the three review axes. Preserve each finding's axis as metadata, but organize the GitHub body by what the author needs to do:
+The posted review is not a raw dump of the three review axes, and it does not restate the diff. Preserve each finding's axis as metadata, but organize the GitHub body by what the author needs to do:
 
 1. **Must fix before merge** - blocking findings only.
 2. **Should verify before merge** - important non-blocking findings and intent checks.
 3. **Suggestions and notes** - suggestions, smells, confirmations, skipped axes, and no-finding notes in a collapsed `<details>` block.
 
-Start with a short verdict/TL;DR, then summarize what changed, then list findings by the hierarchy above. Put the final recommendation at the end.
+Start with a verdict heading and a severity summary table, optionally one short alert for the single most important next step, then list findings by the hierarchy above. Put the final recommendation at the end. Do not add `What changed`, `Reviewed files`, `TL;DR`, or `Action checklist` sections - GitHub already shows the diff, and the findings already carry the actions.
 
-Every finding must include a short title, file and line, emoji severity label, review axis, blocking/important/suggestion severity, impact, evidence, and focused remediation. Omit empty sections unless the absence is important context.
-
-Use the reference's labels consistently: 🔴 Bug, 🟡 Risk, 🟠 Missing test, and 🔵 Suggestion. End with ✅ Approve or 🔄 Request Changes.
+The summary table counts by `code-review` severity (`⛔ blocking`, `⚠️ important`, `💡 suggestion`), which is the source of truth. Emoji category labels (🔴 Bug, 🟡 Risk, 🟠 Missing test, 🔵 Suggestion) appear only on individual finding lines, alongside the axis and the severity word. End with ✅ Approve or 🔄 Request Changes.
 
 Do not promote code-smell judgments into blocking findings unless a documented repository standard independently makes them blocking.
 

@@ -5,20 +5,22 @@ Use this format when converting a `code-review` output into the GitHub PR review
 ## Principles
 
 - **Author-first hierarchy:** organize by actionability before review taxonomy.
-- **GitHub-native UX:** use GFM tables, task lists, alerts, emoji labels, and `<details>` blocks when they make the review easier to scan.
+- **No restating the diff:** do not summarize what the author changed. GitHub already shows the diff and file list. The review is the reviewer's output, not an echo of the PR.
+- **GitHub-native UX:** use GFM tables, alerts, emoji labels, and `<details>` blocks when they make the review easier to scan.
 - **Progressive disclosure:** keep the main body short; hide confirmations, no-finding notes, and optional suggestions behind collapsible sections.
-- **One finding, one decision:** every visible finding should make clear whether it blocks merge, needs verification, needs a test, or is optional.
+- **One finding, one decision:** every visible finding should make clear whether it blocks merge, needs verification, or is optional.
 
 ## Severity and verdict labels
 
-Use color and icon labels consistently. Keep the underlying `code-review` severity, but translate it into reviewer-friendly labels in the GitHub body.
+The summary table counts by `code-review` severity, which is the source of truth: `blocking`, `important`, `suggestion`. The emoji category label is an additional, finding-level cue — it is not what the summary counts.
 
-| Label | Use for | Usually maps to |
+| Summary count | Emoji on the finding line | Use for |
 | --- | --- | --- |
-| 🔴 **Bug** | Concrete bug, regression, broken behavior, security flaw, or data-integrity issue. | `blocking` or `important` |
-| 🟡 **Risk** | Risky behavior change, security/data/performance risk, or intent that needs confirmation. | `important` |
-| 🟠 **Missing test** | Changed behavior that lacks meaningful regression or acceptance coverage. | `blocking` or `important` |
-| 🔵 **Suggestion** | Clarity, maintainability, style, docs, or non-blocking smell feedback. | `suggestion` |
+| ⛔ blocking | 🔴 **Bug** / 🟠 **Missing test** | Concrete bug, regression, broken behavior, security/data-integrity issue, or missing coverage that must be resolved before merge. |
+| ⚠️ important | 🟡 **Risk** / 🔴 **Bug** / 🟠 **Missing test** | Risky behavior change, intent that needs confirmation, or a non-blocking defect worth verifying. |
+| 💡 suggestion | 🔵 **Suggestion** | Clarity, maintainability, style, docs, or non-blocking smell feedback. |
+
+Every finding line carries both cues: the emoji category, the review axis, and the authoritative `code-review` severity word, e.g. `🔴 **Bug** · **Correctness** · **blocking**`. A blocking Standards or Spec finding still uses 🔴.
 
 Recommendation labels:
 
@@ -32,42 +34,20 @@ Use this copyable skeleton for real PR reviews. Replace placeholders and omit em
 ```markdown
 ## Review: ✅ Approve | 🔄 Request Changes
 
-| Result | 🔴 Bugs | 🟡 Risks | 🟠 Missing tests | 🔵 Suggestions |
-| --- | ---: | ---: | ---: | ---: |
-| ✅ Approve | 0 | 0 | 0 | 0 |
+| Result | ⛔ blocking | ⚠️ important | 💡 suggestion |
+| --- | ---: | ---: | ---: |
+| ✅ Approve | 0 | 0 | 0 |
 
-> [!IMPORTANT]
-> **Next step:** One sentence describing the most important author action, or omit this alert when there is no notable next step.
-
-### TL;DR
-
-- One sentence on the overall state of the PR.
-- One sentence on the highest-risk area, if any.
-- One sentence on what the author should do next.
-
-### What changed
-
-- Short, reviewer-friendly summary of area 1.
-- Short, reviewer-friendly summary of area 2.
-
-### Reviewed files
-
-| File | Why it mattered |
-| --- | --- |
-| `path/to/file.ext` | Short description of the changed area. |
+> [!NOTE]
+> One sentence on the single most important next step, or omit this alert entirely when there is nothing notable.
 
 ### Since the last review
 
 | Status | Finding | Notes |
 | --- | --- | --- |
-| Resolved | Previous finding title | What changed |
-| Still open | Previous finding title | What remains |
-| New | New finding title | Why it matters |
-
-### Action checklist
-
-- [ ] Concrete author action or acknowledgement.
-- [ ] Another concrete author action.
+| ✅ Resolved | Previous finding title | What changed |
+| 🔄 Still open | Previous finding title | What remains |
+| 🆕 New | New finding title | Why it matters |
 
 ### Must fix before merge
 
@@ -103,7 +83,7 @@ Specific observed behavior, code path, standard, or spec text.
 Focused remediation.
 
 <details>
-<summary>🔵 Suggestions and notes</summary>
+<summary>💡 Suggestions and notes</summary>
 
 #### 3. Short finding title
 
@@ -118,10 +98,6 @@ Specific observed behavior, code path, standard, or spec text.
 **Suggested fix:**
 Focused remediation.
 
-#### Additional review notes
-
-- Correctness: no additional findings.
-- Standards: no documented-standard violations.
 - Spec: no missing or out-of-scope behavior identified.
 
 </details>
@@ -139,38 +115,12 @@ This section intentionally renders the GitHub-flavored Markdown components so re
 
 ## Review: ✅ Approve
 
-| Result | 🔴 Bugs | 🟡 Risks | 🟠 Missing tests | 🔵 Suggestions |
-| --- | ---: | ---: | ---: | ---: |
-| ✅ Approve | 0 | 1 | 0 | 2 |
+| Result | ⛔ blocking | ⚠️ important | 💡 suggestion |
+| --- | ---: | ---: | ---: |
+| ✅ Approve | 0 | 1 | 2 |
 
-> [!IMPORTANT]
-> **Next step:** Confirm the remaining unauthenticated paths should now return 401. No blocking changes requested.
-
-### TL;DR
-
-- The main implementation looks solid and is covered by relevant tests.
-- The highest-risk area is the broad auth behavior change.
-- I would approve after the non-blocking verification below is acknowledged.
-
-### What changed
-
-- Added the new role/function/permission path behind the feature toggle.
-- Changed unauthenticated user lookup from null-returning to 401-throwing behavior.
-- Added the safe lookup helper for call sites that still need null-tolerant behavior.
-
-### Reviewed files
-
-| File | Why it mattered |
-| --- | --- |
-| `ContentUtils.java` | Changes unauthenticated user lookup behavior and adds the safe helper. |
-| `ServiceExceptionHandler.java` | Maps the new unauthenticated exception to HTTP 401 and logs it. |
-| `V55.2.1__IAEMOD-integrity-records-roles.sql` | Adds the integrity-records function, permissions, role, and mappings. |
-
-### Action checklist
-
-- [ ] Verify the remaining unauthenticated call sites should now return 401.
-- [ ] Fix or accept the log-message formatting issue.
-- [ ] Optional: de-duplicate the two user lookup helpers.
+> [!NOTE]
+> One non-blocking behavior change to confirm. Nothing blocks merge.
 
 ### Must fix before merge
 
@@ -199,7 +149,7 @@ Several call sites still contain null-fallback branches that are now unreachable
 Confirm 401 is intended for these paths. If it is, remove the dead null-fallback branches in a follow-up or in this PR so the code reflects the new contract.
 
 <details>
-<summary>🔵 Suggestions and notes</summary>
+<summary>💡 Suggestions and notes</summary>
 
 #### 2. Preserve the unauthenticated exception message in logs
 
@@ -230,8 +180,6 @@ Both helpers perform the same security-context extraction and differ only in whe
 **Suggested fix:**
 Extract the shared security-context lookup or have one method delegate to the other.
 
-#### Additional review notes
-
 - Migration inserts are idempotent.
 - Toggle-off behavior degrades gracefully if migrated records are absent.
 - No missing or out-of-scope behavior identified against the referenced acceptance criteria.
@@ -249,17 +197,15 @@ Extract the shared security-context lookup or have one method delegate to the ot
 Use this visible hierarchy in the posted PR review:
 
 1. `## Review: ✅ Approve` or `## Review: 🔄 Request Changes`
-2. Summary table with emoji severity counts.
+2. Summary table with `code-review` severity counts (`⛔ blocking`, `⚠️ important`, `💡 suggestion`).
 3. Optional GFM alert for the single most important next step.
-4. `### TL;DR`
-5. `### What changed`
-6. Optional `### Reviewed files` table for non-trivial PRs.
-7. Optional `### Since the last review` for follow-up reviews.
-8. `### Action checklist`
-9. `### Must fix before merge`
-10. `### Should verify before merge`
-11. Collapsed `<details>` for `🔵 Suggestions and notes`.
-12. `### Recommendation`
+4. Optional `### Since the last review` for follow-up reviews.
+5. `### Must fix before merge`
+6. `### Should verify before merge`
+7. Collapsed `<details>` for `💡 Suggestions and notes`.
+8. `### Recommendation`
+
+Do not add `What changed`, `Reviewed files`, `TL;DR`, or `Action checklist` sections. The severity table and the findings already carry the summary and the actions; anything else restates the diff or duplicates the findings.
 
 Group by actionability before axis:
 
@@ -275,12 +221,12 @@ GitHub Copilot code review is useful prior art, but `review-draft` should be mor
 
 Borrow these patterns from Copilot reviews:
 
-- Start with a concise pull request overview before detailed findings.
-- Include a compact `Reviewed files` table when it helps the author understand review coverage.
 - Keep feedback concrete and tied to changed code.
 - Prefer small, actionable comments over broad observations.
 - Include focused suggested fixes whenever the remediation is clear.
 - Treat review comments as normal GitHub review conversations that humans can reply to and resolve.
+
+Do not borrow Copilot's `Reviewed files` / `Pull request overview` summary sections; they restate the diff and add length without reviewer value.
 
 Differentiate `review-draft` from Copilot reviews:
 
@@ -296,23 +242,10 @@ Differentiate `review-draft` from Copilot reviews:
 Use tables for compact summaries and side-by-side comparisons. Good uses:
 
 - Review result and severity counts.
-- Reviewed files and why each file mattered.
-- Before/after behavior.
-- Affected endpoints or files.
+- Before/after behavior inside a finding's evidence.
 - Follow-up review status.
 
 Keep tables narrow. If a table needs paragraph-length cells, use bullets instead.
-
-### Task lists
-
-Use task lists only for concrete actions the author can complete or acknowledge.
-
-```markdown
-- [ ] Add a regression test for unauthenticated access.
-- [ ] Confirm 401 is intended for the remaining call sites.
-```
-
-Do not create checkbox noise for observations that require no action.
 
 ### Alerts
 
@@ -337,7 +270,7 @@ The summary line should tell the reader exactly what is inside.
 
 ```markdown
 <details>
-<summary>🔵 Suggestions and notes</summary>
+<summary>💡 Suggestions and notes</summary>
 
 ...
 
@@ -370,7 +303,7 @@ Use descriptive finding titles. Do not start headings with file names unless the
 
 ## Follow-up reviews
 
-For follow-up PR reviews, add this section after `### What changed`:
+For follow-up PR reviews, add this section directly after the summary table (or its optional alert):
 
 ```markdown
 ### Since the last review
@@ -389,7 +322,7 @@ Only include categories that exist. Keep the rest of the review focused on curre
 - If there are no blocking findings, write `No blocking findings.` under `Must fix before merge`.
 - If there are no important findings, omit `Should verify before merge`.
 - If there are no suggestions or notes, omit the `<details>` block.
-- If the Spec axis was skipped, mention that once in `🔵 Suggestions and notes` with the reason.
+- If the Spec axis was skipped, mention that once in `💡 Suggestions and notes` with the reason.
 - Do not include “no finding” items in the main findings lists.
 
 ## Attribution footer
