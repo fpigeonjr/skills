@@ -1,13 +1,13 @@
 ---
-name: review-draft
-description: Turns a code review into a GitHub PR review, presents it for exact human approval, and posts it only after approval. Use when the user wants to draft and submit a PR review, approve or request changes on GitHub, or says "write up a review for me to post".
+name: submit-pr-review
+description: Turns a code review into an approved GitHub PR review and submits it only after exact human approval. Use when the user wants to post or submit a PR review, approve a PR, request changes on GitHub, or says "write up a review for me to post".
 argument-hint: "[PR URL or number]"
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
-# Review Draft
+# Submit PR Review
 
-GitHub publishing wrapper for the `code-review` skill. Identify the PR, run the review, turn its findings into an Approve or Request Changes draft, and post only the exact text the human approves.
+GitHub submission wrapper for the `code-review` skill. Identify the PR, run the review, turn its findings into an Approve or Request Changes draft, and submit only the exact text the human approves.
 
 ## Identify the PR
 
@@ -84,7 +84,7 @@ Ask the human to approve, edit, or reject the draft. Only post the review after 
 After approval, save the exact approved review body to a temporary file and submit it with the matching recommendation:
 
 ```bash
-REVIEW_FILE=$(mktemp -t review-draft-XXXXXX.md)
+REVIEW_FILE=$(mktemp -t submit-pr-review-XXXXXX.md)
 
 # Use exactly one after writing the approved body to $REVIEW_FILE
 gh pr review $PR --approve --body-file "$REVIEW_FILE"
