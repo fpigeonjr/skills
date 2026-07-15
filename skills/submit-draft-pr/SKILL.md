@@ -54,15 +54,46 @@ gh pr list --state merged --limit 5 --json title,body
 
 Read the full diff carefully before writing anything.
 
-## Fetch the PR Template
+## Fetch the Repo PR Template
+
+Always use the repository's PR template as the starting point for the body. Prefer the template that exists in the working tree or on the PR base branch; only fall back to a free-form body if no template can be found.
+
+Check all standard GitHub template locations, including template directories:
 
 ```bash
-# Try lowercase first, then uppercase
-gh api repos/{owner}/{repo}/contents/.github/pull_request_template.md \
+# First try templates present in the checked-out repo
+find .github docs -maxdepth 2 \
+  \( -iname 'pull_request_template.md' -o -path '.github/PULL_REQUEST_TEMPLATE/*.md' \) \
+  -type f 2>/dev/null
+
+# Then try the base branch, in case the file is not present locally
+for path in \
+  .github/pull_request_template.md \
+  .github/PULL_REQUEST_TEMPLATE.md \
+  docs/pull_request_template.md
+  do
+    git show "$BASE:$path" 2>/dev/null && break
+  done
+
+# Also list directory-style templates on the base branch, if any
+git ls-tree -r --name-only "$BASE" .github/PULL_REQUEST_TEMPLATE 2>/dev/null
+```
+
+If multiple templates exist, choose the one that matches the change type. If the correct choice is not obvious, ask the user which template to use.
+
+If the template is only available from GitHub, fetch it from the base branch ref:
+
+```bash
+OWNER_REPO="$(gh repo view --json nameWithOwner --jq '.nameWithOwner')"
+gh api "repos/$OWNER_REPO/contents/.github/pull_request_template.md?ref=$BASE" \
   --jq '.content' | base64 -d 2>/dev/null \
-|| gh api repos/{owner}/{repo}/contents/.github/PULL_REQUEST_TEMPLATE.md \
+|| gh api "repos/$OWNER_REPO/contents/.github/PULL_REQUEST_TEMPLATE.md?ref=$BASE" \
+  --jq '.content' | base64 -d 2>/dev/null \
+|| gh api "repos/$OWNER_REPO/contents/docs/pull_request_template.md?ref=$BASE" \
   --jq '.content' | base64 -d 2>/dev/null
 ```
+
+Save the selected template to a temporary file and populate that file. Do not pass a hand-written body directly to `gh pr create` unless no repo template exists.
 
 If no template exists, write a concise description covering what changed, why, and any relevant context.
 
@@ -98,7 +129,16 @@ Skip labeling if the right labels cannot be determined with confidence.
 
 Extract a short PR title (under 70 characters) from the changes.
 
-Confirm with the user before creating — show the base branch, title, and a brief summary of what the body will contain. Ask "Ready to create?"
+Write the populated template body to a file so Markdown, checkboxes, and comments survive unchanged:
+
+```bash
+BODY_FILE="$(mktemp -t pr-body.XXXXXX.md)"
+cat >"$BODY_FILE" <<'EOF'
+<populated repo template body>
+EOF
+```
+
+Confirm with the user before creating — show the base branch, selected template path (or "none found"), title, labels, and a brief summary of what the body will contain. Ask "Ready to create?"
 
 ```bash
 gh pr create \
@@ -106,11 +146,10 @@ gh pr create \
   --base "$BASE" \
   --title "the pr title" \
   --assignee "@me" \
-  --body "$(cat <<'EOF'
-<populated template body>
-EOF
-)"
+  --body-file "$BODY_FILE"
 ```
+
+Use `--body-file`, not inline `--body`, for reliability. Do not use `--template` for the final create command because the body has already been populated from the repo template.
 
 Report the PR URL when done.
 
