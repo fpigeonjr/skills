@@ -13,7 +13,7 @@ Create a worktree and feature branch for a Jira ticket or GitHub issue off the l
 
 ## Branching strategy
 
-- Integration branches are named `integration-<PI>.<Sprint>`, where `<Sprint>` is `1`, `2`, `3`, or `IP` (the 4th / IP sprint). Example: `integration-66.1`, `integration-59.IP`.
+- Integration branches are named `integration-<PI>.<Sprint>`, where `<Sprint>` is `1`, `2`, `3`, or `ip` (the 4th and last sprint in the PI). Sprint matching is **case-insensitive** (`IP`, `ip`, `Ip` all parse as the IP sprint); the canonical spelling is lowercase `ip`. Example: `integration-66.1`, `integration-59.ip`.
 - Jira feature branches are named **exactly** after the ticket ID (e.g. `IAEMOD-58792`).
 - GitHub issue branches are named `gh-<number>-<slug>` where `<slug>` is the issue title lowercased, with non-alphanumeric characters replaced by hyphens, truncated to 50 characters (e.g. `gh-90-fix-login-redirect`).
 
@@ -56,8 +56,8 @@ git branch -r --list 'origin/integration-*'
 Parse each branch as `integration-<PI>.<Sprint>` and pick the highest:
 
 - Compare by **PI number** (numeric) first.
-- Then by **sprint**: `IP` always sorts last within its PI (after `1`, `2`, `3`).
-- Ignore branches that don't match the `integration-<PI>.<Sprint>` shape — never crash on malformed names.
+- Then by **sprint**: `ip` always sorts last within its PI (after `1`, `2`, `3`), regardless of casing.
+- Ignore branches that don't match the `integration-<PI>.<Sprint>` shape — never crash on malformed names. Do **not** discard a branch solely for casing (e.g. `integration-66.ip` is a valid IP-sprint branch).
 
 If no matching integration branch is found, **stop** with a clear error listing the `integration-*` branches (if any) that were seen.
 
