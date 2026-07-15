@@ -47,7 +47,7 @@ A side-effect-free analysis of a diff along independent Correctness, Standards, 
 _Avoid_: PR review, when referring to the analysis.
 
 **PR review**:
-The GitHub review submitted as Approve or Request Changes by `review-draft`, only after exact human approval of its body and recommendation.
+The GitHub review submitted as Approve or Request Changes by `submit-pr-review`, only after exact human approval of its body and recommendation.
 _Avoid_: code review, when referring to the posted GitHub artifact.
 
 **Review thread**:
@@ -58,7 +58,7 @@ A single unresolved conversation on a PR. `address-review-comments` collects eve
 - An **Issue** (or **Ticket**) carries many **Acceptance criteria** and gets one **Feature branch**.
 - A **Feature branch** is cut from one **Integration branch** and lives in its own **Worktree**.
 - A **Feature branch** produces one **Draft PR**, which is promoted to **Ready-for-review** once all **Checks** are green and no **Review thread** is unresolved.
-- `code-review` produces a **Code review**; `review-draft` turns it into a **PR review** after human approval.
+- `code-review` produces a **Code review**; `submit-pr-review` turns it into a **PR review** after human approval.
 - `goal` closes the gap between branch and PR: it runs TDD cycles against the **Acceptance criteria** until every item is evidenced and every **Check** is green.
 
 ## Flagged ambiguities

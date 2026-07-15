@@ -20,7 +20,7 @@ The summary table counts by `code-review` severity, which is the source of truth
 | ⚠️ important | 🟡 **Risk** / 🔴 **Bug** / 🟠 **Missing test** | Risky behavior change, intent that needs confirmation, or a non-blocking defect worth verifying. |
 | 💡 suggestion | 🔵 **Suggestion** | Clarity, maintainability, style, docs, or non-blocking smell feedback. |
 
-Each finding is a single emoji-prefixed line plus a short prose paragraph. The section it sits under (`Must fix` / `Should verify` / `Suggestions`) conveys severity, and the emoji conveys the category, so the finding does not repeat the severity word or the review axis. `code-review` owns the Correctness/Standards/Spec axis upstream; `review-draft` does not restate it. A blocking Standards or Spec finding still uses 🔴.
+Each finding is a single emoji-prefixed line plus a short prose paragraph. The section it sits under (`Must fix` / `Should verify` / `Suggestions`) conveys severity, and the emoji conveys the category, so the finding does not repeat the severity word or the review axis. `code-review` owns the Correctness/Standards/Spec axis upstream; `submit-pr-review` does not restate it. A blocking Standards or Spec finding still uses 🔴.
 
 Recommendation labels:
 
@@ -143,7 +143,7 @@ Group by actionability. The section supplies the severity, so findings do not re
 
 ## Copilot code review deltas
 
-GitHub Copilot code review is useful prior art, but `review-draft` should be more explicit about verdict and hierarchy.
+GitHub Copilot code review is useful prior art, but `submit-pr-review` should be more explicit about verdict and hierarchy.
 
 Borrow these patterns from Copilot reviews:
 
@@ -154,12 +154,12 @@ Borrow these patterns from Copilot reviews:
 
 Do not borrow Copilot's `Reviewed files` / `Pull request overview` summary sections; they restate the diff and add length without reviewer value.
 
-Differentiate `review-draft` from Copilot reviews:
+Differentiate `submit-pr-review` from Copilot reviews:
 
-- Copilot always leaves a **Comment** review; `review-draft` may submit ✅ Approve or 🔄 Request Changes after human approval.
-- Copilot feedback often appears as inline comments; `review-draft` currently posts a top-level review body, so the body must summarize priority and next actions clearly.
-- Copilot can provide one-click suggested changes in inline comments. Do not put a `suggestion` code fence in the top-level review body because it will not be applicable there. If `review-draft` later supports inline review comments, use `suggestion` fences only for small, directly replaceable code changes.
-- Copilot may repeat comments on re-review; follow-up `review-draft` output should use `### Since the last review` to separate resolved, still-open, and new findings.
+- Copilot always leaves a **Comment** review; `submit-pr-review` may submit ✅ Approve or 🔄 Request Changes after human approval.
+- Copilot feedback often appears as inline comments; `submit-pr-review` currently posts a top-level review body, so the body must summarize priority and next actions clearly.
+- Copilot can provide one-click suggested changes in inline comments. Do not put a `suggestion` code fence in the top-level review body because it will not be applicable there. If `submit-pr-review` later supports inline review comments, use `suggestion` fences only for small, directly replaceable code changes.
+- Copilot may repeat comments on re-review; follow-up `submit-pr-review` output should use `### Since the last review` to separate resolved, still-open, and new findings.
 
 ## GFM components to use
 

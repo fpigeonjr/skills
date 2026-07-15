@@ -60,7 +60,7 @@ allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 
 **submit-draft-pr skill**: After creating the PR, always print a manual action note — Copilot reviews cannot be requested via the API.
 
-**code-review / review-draft split**: `code-review` is side-effect-free analysis along independent Correctness, Standards, and Spec axes; it never posts or collapses the axes into one verdict. `review-draft` is the GitHub wrapper that converts those findings into Approve or Request Changes, requires exact human approval, and only then posts the PR review. The axis lives in `code-review` output only — the posted PR review drops it and organizes findings by actionability (Must fix / Should verify / Suggestions). See `skills/review-draft/REVIEW-FORMAT.md` for the emoji-prefixed prose finding format.
+**code-review / submit-pr-review split**: `code-review` is side-effect-free analysis along independent Correctness, Standards, and Spec axes; it never posts or collapses the axes into one verdict. `submit-pr-review` is the GitHub submission wrapper that converts those findings into Approve or Request Changes, requires exact human approval, and only then posts the PR review. The axis lives in `code-review` output only — the posted PR review drops it and organizes findings by actionability (Must fix / Should verify / Suggestions). See `skills/submit-pr-review/REVIEW-FORMAT.md` for the emoji-prefixed prose finding format.
 
 **to-prd skill**: Requires `docs/agents/issue-tracker.md` to exist in the target project before publishing.
 
