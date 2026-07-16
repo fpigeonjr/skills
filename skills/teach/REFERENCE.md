@@ -7,7 +7,6 @@ To learn at a deep level, the user needs three things:
 - **Knowledge** — captured from high-quality, high-trust resources
 - **Skills** — acquired through highly-relevant interactive lessons
 - **Wisdom** — which comes from interacting with other learners and practitioners
-
 Before `RESOURCES.md` is well-populated, focus on finding high-quality resources. **Never trust parametric knowledge alone.**
 
 Some topics skew knowledge-heavy (theoretical physics); others skew skills-heavy (yoga, programming). Calibrate accordingly.
@@ -78,7 +77,15 @@ Reference docs live in `./reference/` as HTML files. They are:
 
 Good candidates: syntax sheets, algorithm flowcharts, glossaries, pose sequences, exercise routines.
 
-A **glossary** is essential for any topic with its own terminology. Once created, enforce it consistently across all lessons.
+A **glossary** is essential for any topic with its own terminology. Once created, enforce it consistently across all lessons. It is the canonical language of the workspace: add a term only once the user understands it, and pick one opinionated word per concept. Format: [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
+
+## Assets (reusable components)
+
+Lessons are assembled from reusable **components** in `./assets/` — stylesheets, quiz widgets, simulators, diagram helpers. Reuse is the default, not the exception:
+
+- Read `./assets/` before authoring a lesson; build from existing components.
+- When something new and reusable is needed, write it as a component and link to it rather than inlining code a future lesson would duplicate.
+- The shared stylesheet is the first component every workspace earns — it makes the lessons look like one coherent course. Grow the component library as the workspace matures.
 
 ## `NOTES.md`
 

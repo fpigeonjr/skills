@@ -19,8 +19,10 @@ Treat the current directory as the teaching workspace:
 | `MISSION.md` | Why the user is learning — grounds every decision. Format: [MISSION-FORMAT.md](./MISSION-FORMAT.md) |
 | `NOTES.md` | Scratchpad for user preferences and working notes |
 | `RESOURCES.md` | Curated high-trust sources. Format: [RESOURCES-FORMAT.md](./RESOURCES-FORMAT.md) |
+| `GLOSSARY.md` | Canonical terminology for the topic — enforce it everywhere. Format: [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md) |
 | `reference/*.html` | Beautiful, print-friendly cheat sheets — raw units of knowledge |
 | `lessons/*.html` | Self-contained HTML lessons, titled `0001-<dash-case-name>.html` |
+| `assets/*` | Reusable components shared across lessons — stylesheets, quiz widgets, simulators. See [Assets](#assets) |
 | `learning-records/*.md` | ADR-style insights that set the zone of proximal development. Format: [LEARNING-RECORD-FORMAT.md](./LEARNING-RECORD-FORMAT.md) |
 
 ## First session checklist
@@ -37,10 +39,21 @@ Treat the current directory as the teaching workspace:
 - Short: completable in a single sitting; one tangible win per lesson
 - Include: citations, links to related lessons/reference docs, a primary source recommendation, and a prompt encouraging the user to ask follow-up questions
 - After writing, open the file with a CLI command (e.g. `open lessons/0001-*.html`)
+- Build from shared components in `./assets/` — never inline code a future lesson would duplicate
+
+## Assets
+
+Lessons are built from reusable **components** stored in `./assets/`: stylesheets, quiz widgets, simulators, diagram helpers — anything a second lesson could reuse.
+
+- **Reuse is the default.** Read `./assets/` before authoring a lesson and build from what's there.
+- When a lesson needs something new and reusable, write it as a component in `./assets/` and link to it.
+- A shared stylesheet is the first component every workspace earns — every lesson links it, so the course looks consistent rather than a pile of one-offs. Grow the library as the workspace grows.
 
 ## Reference documents
 
-Create alongside lessons. Compressed essence of the lesson — glossaries, syntax sheets, algorithms, pose guides. Designed for quick lookup, not reading.
+Create alongside lessons. Compressed essence of the lesson — syntax sheets, algorithms, pose guides. Designed for quick lookup, not reading.
+
+A **glossary** (`GLOSSARY.md`) is the essential reference for any topic with its own terminology. Add a term only once the user understands it, pick one canonical word per concept, and enforce it across every lesson. Format: [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
 
 ## See also
 
