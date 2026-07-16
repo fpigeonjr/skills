@@ -2,7 +2,7 @@
 name: code-review
 description: Reviews a pull request, branch, commit range, or work-in-progress diff for correctness, repository standards, and fidelity to its originating spec. Use when the user asks for a code review, wants changes reviewed since a fixed point, or needs implementation checked against an issue, PRD, or spec.
 argument-hint: "[PR, branch, commit, tag, or fixed point]"
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read Grep Glob Bash
 ---
 
 # Code Review

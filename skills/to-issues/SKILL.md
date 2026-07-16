@@ -2,7 +2,7 @@
 name: to-issues
 description: Break a plan, spec, or PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues.
 argument-hint: "[issue number, URL, or plan description]"
-allowed-tools: Read, Grep, Glob, Bash, Write
+allowed-tools: Read Grep Glob Bash Write
 ---
 
 # To Issues
