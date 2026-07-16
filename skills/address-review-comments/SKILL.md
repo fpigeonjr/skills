@@ -2,7 +2,7 @@
 name: address-review-comments
 description: Collect all open PR review comments and unresolved conversations, investigate each one, apply valid changes, push the branch, and reply to each thread with a summary. Use when the user wants to address PR feedback, respond to review comments, resolve review threads, or says things like "fix the review comments", "address feedback", or "respond to the PR review".
 argument-hint: "[PR URL or number]"
-allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+allowed-tools: Read Grep Glob Bash Edit Write
 ---
 
 # Address Review Comments

@@ -2,7 +2,7 @@
 name: submit-draft-pr
 description: Create a draft GitHub pull request with the repo's PR template fully populated. Analyzes the branch diff, fills every template section, applies labels, and assigns the PR to the authenticated user. Use when the user wants to open a PR, create a pull request, submit their branch for review, or says things like "make a PR", "open a PR", "submit this for review", or "I'm ready to create a pull request".
 argument-hint: "[issue-number] [--base base-branch]"
-allowed-tools: Read, Grep, Glob, Bash
+allowed-tools: Read Grep Glob Bash
 ---
 
 # Submit Draft PR

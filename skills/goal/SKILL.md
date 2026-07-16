@@ -2,7 +2,7 @@
 name: goal
 description: Drive a single GitHub issue to completion through a human-checkpointed red-green loop — reads acceptance criteria from the issue, confirms the test plan and definition of "green" with you upfront, then runs TDD cycles until all AC are met and project checks pass, and hands back for your review before any PR is opened. Use when the user wants to work a ticket to completion, mentions "/goal", or says things like "work this ticket until it's done" or "keep going until AC pass".
 argument-hint: "[issue number or goal description]"
-allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+allowed-tools: Read Grep Glob Bash Edit Write
 ---
 
 # Goal

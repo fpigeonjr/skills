@@ -28,7 +28,7 @@ Every skill directory must contain a `SKILL.md` with YAML frontmatter:
 name: skill-name
 description: What it does. Use when <specific triggers>.
 argument-hint: "[optional]"
-allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+allowed-tools: Read Grep Glob Bash Edit Write
 ---
 ```
 

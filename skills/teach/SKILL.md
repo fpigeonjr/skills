@@ -2,7 +2,7 @@
 name: teach
 description: Run a stateful, multi-session teaching workspace — creates HTML lessons, reference cheat sheets, and learning records tailored to a user's mission. Use when the user wants to learn a new topic, asks to be taught something, mentions "teach me", "I want to learn", or wants lessons, exercises, or a structured learning plan.
 argument-hint: "What would you like to learn about?"
-allowed-tools: Read, Bash, Write, Edit
+allowed-tools: Read Bash Write Edit
 disable-model-invocation: true
 ---
 

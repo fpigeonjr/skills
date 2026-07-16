@@ -2,7 +2,7 @@
 name: write-a-skill
 description: Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.
 argument-hint: "[skill name or description]"
-allowed-tools: Read, Grep, Glob, Bash, Edit, Write
+allowed-tools: Read Grep Glob Bash Edit Write
 ---
 
 # Writing Skills
