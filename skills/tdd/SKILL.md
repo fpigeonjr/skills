@@ -70,6 +70,8 @@ RED:   Write test for first behavior → test fails
 GREEN: Write minimal code to pass → test passes
 ```
 
+**Evidence rule:** RED requires the intended public-interface path to execute and fail for the expected missing behavior. Dependency, compilation, infrastructure, or unrelated timeout failures are setup/check failures, not behavioral RED. GREEN requires the same path to execute successfully with meaningful assertions and observable effects; a no-op path is not proof. A timeout is behavioral evidence only when the exercised path and expected missing observable effect are established.
+
 This is your tracer bullet - proves the path works end-to-end.
 
 ### 3. Incremental Loop

@@ -69,6 +69,8 @@ allowed-tools: Read Grep Glob Bash Edit Write
 
 **retro skill**: User-invoked, session-evidence-based environment review. Daily mode samples today's accessible sessions for the current repo. Propose first; apply only selected changes, with separate explicit approval for global scope. No automatic commits or publication.
 
+**implement-spec skill**: User-invoked whole-spec coordination for GitHub issues. Use a dedicated `spec/<slug>` aggregation branch from an approved pinned base, not the shared integration branch. Sequential by default; parallel workers need explicit approval and pre-approved issue test plans. Release dependencies only after verification (integration, green checks, AC evidence, and required human/manual checkpoints). Preserve HITL gates, serialize merges, retain worktrees, and hand back without automatic push, PR creation, issue closure, or cleanup.
+
 ## Credits
 
-`code-review`, `tdd`, `grill-me`, `grill-with-docs`, `zoom-out`, `handoff`, `to-issues`, `to-prd`, `retro`, and `write-a-skill` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). Skills conform to the [Agent Skills standard](https://agentskills.io/specification).
+`code-review`, `tdd`, `grill-me`, `grill-with-docs`, `zoom-out`, `handoff`, `to-issues`, `to-prd`, `retro`, `implement-spec`, and `write-a-skill` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT). Skills conform to the [Agent Skills standard](https://agentskills.io/specification).

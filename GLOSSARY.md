@@ -26,6 +26,10 @@ _Avoid_: requirements, definition of done (reserve "definition of done" for the 
 The shared branch a **Feature branch** is cut from and merged back into, named `integration-<PI>.<Sprint>` (e.g. `integration-66.1`, `integration-59.IP`). `start-ticket` picks the highest by PI then sprint (`IP` sorts last).
 _Avoid_: main, develop, trunk (this collection branches off integration branches, not a single trunk).
 
+**Spec branch**:
+A dedicated aggregation branch, named `spec/<slug>`, where `implement-spec` combines the approved issues for one spec. It is based on a user-approved, pinned integration ref and is not the shared **Integration branch**.
+_Avoid_: integration branch, when referring to this isolated aggregation branch.
+
 **Feature branch**:
 The branch created for one **Issue** or **Ticket**. Jira branches are named exactly after the ticket ID (e.g. `IAEMOD-58792`); GitHub branches are `gh-<number>-<slug>`.
 _Avoid_: topic branch.
@@ -60,6 +64,7 @@ A single unresolved conversation on a PR. `address-review-comments` collects eve
 - A **Feature branch** produces one **Draft PR**, which is promoted to **Ready-for-review** once all **Checks** are green and no **Review thread** is unresolved.
 - `code-review` produces a **Code review**; `submit-pr-review` turns it into a **PR review** after human approval.
 - `goal` closes the gap between branch and PR: it runs TDD cycles against the **Acceptance criteria** until every item is evidenced and every **Check** is green.
+- `implement-spec` combines approved **Feature branches** onto one **Spec branch**; a blocking **Issue** releases its dependents only after verification: integration, passing **Checks**, evidenced **Acceptance criteria**, and confirmed human/manual checkpoints.
 
 ## Flagged ambiguities
 

@@ -17,9 +17,9 @@ See [REFERENCE.md](REFERENCE.md) for the full loop spec and guard details.
 
 ### 1. Resolve acceptance criteria
 
-- Parse the current branch name (`gh-<number>-<slug>`) to extract the issue number.
-- Fetch the issue and read the `## Acceptance criteria` checklist.
-- If no issue is resolvable, use the inline argument as the goal; if none provided, ask.
+- Prefer an explicitly supplied tracked GitHub issue URL/number and approved host/repository, including coordinator-provided source context. Otherwise parse the current branch name (`gh-<number>-<slug>`).
+- For a tracked issue, fetch its full body using the approved host/repository (e.g. `GH_HOST=<host> gh issue view <number> --repo <host>/<owner>/<repo> --json url,body`). Confirm the returned canonical URL matches the intended issue and read its `## Acceptance criteria`; compare with supplied AC and stop on drift. Do not infer a different repository from fork or multiple remotes.
+- If a tracked issue cannot be fetched or its identity/AC is ambiguous, stop; do not fall back to an inline goal. Use inline goal text only when no tracked issue was requested; if neither is supplied, ask.
 
 ### 2. Detect check commands (upfront, once)
 

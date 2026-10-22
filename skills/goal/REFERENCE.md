@@ -20,9 +20,10 @@ resolve_ac()
 
 | Source | How |
 |---|---|
-| Branch name `gh-<N>-<slug>` | `gh issue view <N> --json body` → parse `## Acceptance criteria` |
-| Inline argument | Use as-is if no issue number resolvable |
-| Ask | If no argument and no branch number |
+| Explicit tracked issue URL/number + host/repo | Fetch with explicit `GH_HOST` and `--repo`, verify canonical URL and compare supplied AC with the fetched `## Acceptance criteria`; stop on drift or fetch failure |
+| Branch name `gh-<N>-<slug>` | Resolve the intended repo/host, fetch the issue, verify URL → parse `## Acceptance criteria`; stop on ambiguity |
+| Inline goal text | Use only if no tracked issue was requested; never substitute for failed issue resolution |
+| Ask | If no inline goal, tracked issue or branch number |
 
 ## Check command detection precedence
 
@@ -33,6 +34,10 @@ resolve_ac()
 | 3 | `.pre-commit-config.yaml` | `repos[].hooks` entries |
 | 4 | `husky` / `lefthook` | `.husky/pre-commit`, `lefthook.yml` |
 | 5 | Ask | If nothing found |
+
+## Implementation preflight
+
+After plan approval, before implementation in each working checkout, verify required dependencies and run the agreed focused baseline using project-discovered commands. Install dependencies only through the project's approved setup; do not bypass dependency constraints or change configuration to make setup pass. Missing tools or unavailable required verification mean **blocked**: report the setup failure and preserve any partial work, rather than hand back an unverified implementation as complete. Record pre-existing baseline failures and seek direction before proceeding; do not mislabel them as a TDD RED. Full repository checks remain at the existing final gate, not before every edit.
 
 ## TDD delegation
 
