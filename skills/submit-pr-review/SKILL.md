@@ -40,7 +40,7 @@ If prior reviews or PR comments exist, treat this as a **follow-up review**:
 
 ## Run the Code Review
 
-Run the `code-review` skill with the PR as its review target. It owns diff collection, spec discovery, standards discovery, smell-baseline checks, and the independent Correctness, Standards, and Spec passes.
+Explicitly load `code-review` using the harness's skill loader, or discover and read its `SKILL.md` and needed sibling references. If unavailable, stop and report the missing dependency. Follow the loaded instructions with the PR as the review target. It owns diff collection, spec discovery, standards discovery, smell-baseline checks, and the independent Correctness, Standards, and Spec passes.
 
 For a follow-up review, provide the prior review findings as additional context. Verify each prior concern against the new commits and distinguish resolved findings from findings that remain. Still inspect the complete current diff for regressions and new issues.
 

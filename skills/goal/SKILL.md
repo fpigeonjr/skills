@@ -33,7 +33,7 @@ Discover the project's verification commands in this order:
 
 Present to the user:
 - The resolved AC checklist
-- The test plan derived from the AC (following the `tdd` skill's planning step)
+- The test plan derived from the AC: first load `tdd` using the harness's skill loader, or discover and read its `SKILL.md` and needed sibling references; follow its planning step. If unavailable, stop and report the missing dependency.
 - The discovered check commands that define "green"
 
 **Wait for approval or edits before proceeding.** Do not begin implementation until the user confirms.
@@ -43,7 +43,7 @@ Present to the user:
 Repeat until all AC are met AND all checks pass. The plan is fixed by the approval gate in step 3 — the loop executes that plan, it does not silently re-scope it:
 
 1. **Pick the next gap** — one unmet AC item or one failing check
-2. **Implement** — satisfy it via a TDD red→green cycle (delegate to `tdd` skill)
+2. **Implement** — satisfy it via a TDD red→green cycle following the loaded `tdd` instructions
 3. **Re-run checks** relevant to the change
 4. **Re-evaluate AC** — mark an item done only on verifiable evidence (passing test, observable behaviour). Never self-certify.
 5. **Surface, don't grind** — if a gap can't be closed within the approved plan (new ambiguity, an AC that needs reinterpreting, a design choice the plan didn't cover), stop and check in rather than improvising scope.

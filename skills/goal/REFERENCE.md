@@ -8,7 +8,7 @@ resolve_ac()
     → implementation_loop()
         while not (all_ac_met AND all_checks_green):
             gap = pick_next_gap(unmet_ac, failing_checks)
-            tdd_cycle(gap)           ← delegate to tdd skill
+            tdd_cycle(gap)           ← follow explicitly loaded tdd instructions
             run_relevant_checks()
             re_evaluate_ac()         ← evidence only, never self-certify
             if same_check_failed >= 3:
@@ -36,7 +36,7 @@ resolve_ac()
 
 ## TDD delegation
 
-The `tdd` skill owns the red-green-refactor mechanics. `/goal` owns the outer loop.
+The `tdd` skill owns the red-green-refactor mechanics. `/goal` owns the outer loop. Load `tdd` via the harness's skill loader, or discover and read its `SKILL.md` and needed sibling references before planning; do not rely on naming the skill to load it.
 
 - `/goal` does TDD's **planning step once upfront** (interface design, behaviour list, user approval).
 - After approval, `/goal` feeds each gap to the TDD **tracer bullet + incremental loop**, executing the approved plan and checking in when a gap falls outside it.

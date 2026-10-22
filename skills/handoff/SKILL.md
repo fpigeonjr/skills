@@ -7,7 +7,9 @@ allowed-tools: Bash Write
 
 Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save it to a path produced by `mktemp -t handoff-XXXXXX.md` (read the file before you write to it).
 
-Suggest the skills to be used, if any, by the next session.
+Suggest the skills to be used, if any, by the next session. Include their discoverable locations and instruct the next agent to load each via its harness's skill loader or read its `SKILL.md` and needed references. For user-invoked-only skills, ask the user to invoke them instead.
+
+Before displaying or writing the handoff, redact API keys, passwords, tokens, personal information, and other sensitive session content. Reference sensitive artifacts by safe location rather than copying their contents.
 
 Do not duplicate content already captured in other artifacts (PRDs, plans, ADRs, issues, commits, diffs). Reference them by path or URL instead.
 

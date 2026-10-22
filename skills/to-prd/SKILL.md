@@ -9,13 +9,13 @@ allowed-tools: Read Grep Glob Bash Write
 
 Turn the current conversation context and codebase understanding into a PRD. Do NOT interview the user — just synthesize what you already know.
 
-The issue tracker config should be at `docs/agents/issue-tracker.md` in the current project. If that file doesn't exist, create it — see the [GitHub template](https://github.com/mattpocock/skills/blob/main/skills/engineering/setup-matt-pocock-skills/issue-tracker-github.md) as a starting point.
+Read the issue tracker config at `docs/agents/issue-tracker.md` in the current project before publishing. If missing, stop and ask the user to configure it; do not silently choose a tracker or publish. If a user-invoked setup skill is installed, tell the user to invoke it rather than calling it automatically.
 
 ## Process
 
 ### 1. Explore the codebase
 
-If you haven't already, explore the repo to understand the current state of the codebase. Use the project's domain glossary vocabulary throughout the PRD (from `CONTEXT.md` if it exists), and respect any ADRs in the area you're touching (`docs/adr/`).
+If you haven't already, explore the repo to understand the current state of the codebase. Use the project's domain glossary vocabulary throughout the PRD (from `GLOSSARY.md` if it exists; follow `GLOSSARY-MAP.md` for multiple contexts), and respect any ADRs in the area you're touching (`docs/adr/`).
 
 ### 2. Sketch major modules
 

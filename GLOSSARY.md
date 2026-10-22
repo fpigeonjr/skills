@@ -66,5 +66,3 @@ A single unresolved conversation on a PR. `address-review-comments` collects eve
 - "ticket" vs "issue" — historically used interchangeably across skills. Resolved: GitHub-hosted work is an **Issue**; Jira-hosted work is a **Ticket**. `start-ticket` is the only skill that legitimately spans both because it accepts either source.
 - "AFK" / "autonomous" — `goal` was previously framed as an autonomous grind. Resolved: the loop is **human-checkpointed** (approval gate at the start, review handback at the end); it executes an approved plan rather than self-scoping.
 - "code review" vs "PR review" — a **Code review** is side-effect-free analysis; a **PR review** is the approved GitHub artifact posted from that analysis.
-</content>
-</invoke>

@@ -51,7 +51,9 @@ Iterate until the user approves the breakdown.
 
 ### 5. Publish the issues to the issue tracker
 
-For each approved slice, publish a new issue to the issue tracker. Use the issue body template below. These issues are considered ready for AFK agents, so publish them with the correct triage label unless instructed otherwise.
+Read `docs/agents/issue-tracker.md` for the publishing workflow and any automation-ready triage label. If the tracker config is missing, stop and ask the user to configure it before publishing. If no automation-ready label is documented, omit that label and report why; the persisted Type field remains authoritative.
+
+For each approved slice, publish a new issue to the issue tracker. Use the issue body template below and persist the approved HITL/AFK type in every issue. Only AFK issues receive the configured automation-ready triage label; blockers still govern when work can start. For HITL issues, state the required human checkpoint and do not label them automation-ready. Do not invent labels or treat approval of the breakdown as completion of a HITL checkpoint.
 
 Publish issues in dependency order (blockers first) so you can reference real issue identifiers in the "Blocked by" field.
 
@@ -59,6 +61,10 @@ Publish issues in dependency order (blockers first) so you can reference real is
 ## Parent
 
 A reference to the parent issue on the issue tracker (if the source was an existing issue, otherwise omit this section).
+
+## Type
+
+HITL or AFK, as approved. For HITL, describe the human checkpoint required before automated implementation or merging.
 
 ## What to build
 

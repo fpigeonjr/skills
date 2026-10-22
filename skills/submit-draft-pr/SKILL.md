@@ -95,7 +95,7 @@ gh api "repos/$OWNER_REPO/contents/.github/pull_request_template.md?ref=$BASE" \
 
 Save the selected template to a temporary file and populate that file. Do not pass a hand-written body directly to `gh pr create` unless no repo template exists.
 
-If no template exists, write a concise description covering what changed, why, and any relevant context.
+If no template exists, use `## Summary`, `## Evidence`, and `## Merge Danger`, plus linked issues and reviewer test steps as needed.
 
 ## Populate the Template
 
@@ -111,7 +111,17 @@ Fill **every section** of the template. Do not submit a blank or partially fille
 
 **Checklist / Definition of Done** — check items you can verify from the diff. Leave others for the author to confirm.
 
-**Screenshots** — if backend-only, write "N/A — backend changes only". If there are UI changes, note that screenshots should be added.
+**Screenshots** — if backend-only, write "N/A — backend changes only". For UI changes, capture before/after screenshots when available; otherwise explicitly mark them unavailable or pending human capture.
+
+### Review-at-a-glance content
+
+Preserve every repository-template heading and checklist. Put the following content in the matching summary, verification, and risk sections; append concise sections only where the template has no suitable home. Read the originating issue/spec as well as the diff to assess intent and risk. Use the project's `GLOSSARY.md` vocabulary; follow `GLOSSARY-MAP.md` when present.
+
+- **Summary:** the smallest visual that explains the change, with brief prose for why. Choose a diff sketch, pseudocode, shallow file/component tree, call tree, or Mermaid diagram. Omit irrelevant detail; a tiny documentation edit may need only a short before/after sketch.
+- **Evidence:** actual **Before** and **After** observations, such as the same failing-then-passing test, command output, or UI screenshots. Include exact commands and relevant results, separate from instructions for future testing. Never claim tests ran, screenshots exist, or RED was observed unless evidenced. If before evidence is unavailable, say so and report only what was verified. Do not reset the working tree, perform destructive actions, or alter external state to manufacture evidence; ask before running costly or state-changing verification. Redact credentials and personal information from all artifacts.
+- **Merge Danger:** **Door: one-way or two-way**, with the reason. Reverting code does not undo migrations, sent messages, or external effects. **Blast radius:** identify affected users, consumers, data, or systems and plausible failure impact. Include rollback/mitigation where relevant; label uncertainty rather than guessing.
+
+Keep these concise and avoid duplicating content already in the template. Missing evidence or unresolved risk must remain visible in the body shown for approval.
 
 ## Detect and Apply Labels
 
