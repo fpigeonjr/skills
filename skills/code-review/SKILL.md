@@ -52,6 +52,15 @@ Run each pass independently so one axis does not mask another. Parallelize them 
 
 Trace changed behavior through its public interfaces and callers. Look for concrete bugs, regressions, unsafe failure modes, security or data-integrity risks, performance problems with a plausible impact, and missing tests for changed behavior. Do not report speculative failures without a reproducible path.
 
+Before calling a correctness finding a blocking regression, establish:
+- A supported public caller and realistic input that reach the changed behavior, including earlier validation, deserialization, and persistence/read conversions.
+- Before-versus-after behavior against the pinned review base; show what previously worked and the concrete impact of the change.
+- Relevant upstream contracts for integration claims. Forwarding a credential does not prove the upstream accepted it.
+
+A helper-only reproduction establishes helper behavior, not necessarily an API regression. Label its limits and any unverified reachability; do not promote it to a blocker without the missing evidence. Clear code-path evidence can suffice—an endpoint test is not required for every obvious defect.
+
+During synthesis, distinguish newly introduced defects, preexisting behavior, and intentional legacy-path alignment. Reusing code that works elsewhere neither proves correctness for the newly routed caller nor makes every behavior difference a blocker. Verify caller-specific assumptions and material impact; unresolved intent checks belong in nonblocking feedback.
+
 ### Standards
 
 Check every changed area against the documented repository standards. Cite the source and rule for each violation. Then apply the smell baseline, respecting repository overrides and labeling every smell as a non-blocking judgment call.

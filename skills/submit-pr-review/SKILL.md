@@ -23,6 +23,8 @@ gh pr view --json number,url,headRefName,baseRefName,title,body
 
 If the PR cannot be determined confidently, ask for the PR URL.
 
+Resolve the canonical PR URL, hostname (`PR_HOST`), owner/repository (`PR_REPO`), and number (`PR_NUMBER`) once. Use the full URL as `$PR` for subsequent `gh pr` commands and `--hostname "$PR_HOST"` for every `gh api` call, including identity and review verification. Do not rely on the current checkout or default API host when reviewing a URL from another GitHub host.
+
 ## Check for Prior Reviews
 
 ```bash
@@ -75,7 +77,7 @@ An Approve draft may include important non-blocking findings when the recommenda
 Resolve the authenticated GitHub login before presenting or posting a draft:
 
 ```bash
-gh api user --jq '.login'
+gh api --hostname "$PR_HOST" user --jq '.login'
 ```
 
 Use that login in a blockquote footer as `@<github-login>` so the review identifies whose coding agent drafted it.
@@ -97,6 +99,15 @@ REVIEW_FILE=$(mktemp -t submit-pr-review-XXXXXX.md)
 gh pr review $PR --approve --body-file "$REVIEW_FILE"
 gh pr review $PR --request-changes --body-file "$REVIEW_FILE"
 ```
+
+After submission, verify the review on the same host and return its direct URL. Match the authenticated login, approved body, and expected state (`APPROVED` or `CHANGES_REQUESTED`); do not assume the last review belongs to this submission.
+
+```bash
+gh api --hostname "$PR_HOST" --paginate \
+  "repos/$PR_REPO/pulls/$PR_NUMBER/reviews?per_page=100"
+```
+
+Read `html_url` from the matched review. If submission succeeded but verification failed, report that distinction and retry only the read-only lookup—not the submission, which could create a duplicate review.
 
 If the human asks for edits before approval, revise the draft and repeat the approval gate.
 
