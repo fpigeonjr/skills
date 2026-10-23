@@ -47,9 +47,11 @@ Do not batch-apply changes. Handle one comment at a time.
 
 ## Apply Valid Changes
 
-Make the minimal correct change needed to address the feedback. Do not refactor surrounding code unless the comment explicitly asks for it.
+Before implementation in each working checkout, load and follow [goal's implementation preflight](../goal/REFERENCE.md#implementation-preflight). Load [tdd](../tdd/SKILL.md) and its needed references for behavioral fixes; follow its public-interface RED/GREEN evidence rules. Use the harness's actual skill loader or read the linked files—naming a skill does not load it. Missing dependencies or unavailable required verification mean **blocked**, not complete.
 
-After all changes are applied, run relevant local checks:
+Make the minimal correct change needed to address the feedback. Do not refactor surrounding code unless the comment explicitly asks for it. Preserve earlier regression coverage; if replacing a test, explain how the original behavior remains covered and why the replacement is equivalent or stronger.
+
+After all changes are applied, run relevant local checks against the final tree, including retained regressions and new focused tests:
 
 ```bash
 # Examples — adapt to the project
@@ -59,7 +61,7 @@ python -m pytest
 make test
 ```
 
-Fix any regressions before pushing.
+Fix any regressions before pushing. Record the tested revision, dirty state, exact commands, and results; rebuild required artifacts from the final source before claiming GREEN. A clean commit or a worker's success report is not verification. If required checks are blocked or evidence conflicts, stop and report what is unverified rather than push the implementation as complete.
 
 ## Push the Branch
 
@@ -71,7 +73,7 @@ git push
 
 ## Reply to Each Thread
 
-After a successful push, reply to every addressed comment with a concise summary of what changed:
+After final-tree verification and a successful push, reply to every addressed comment with a concise summary of what changed and the relevant check evidence. Say “fixed” and resolve a thread only when its concern is verified; keep blocked or unverified concerns unresolved and report their limitations:
 
 ```bash
 gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/comments/$COMMENT_ID/replies \
@@ -81,7 +83,7 @@ gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/comments/$COMMENT_ID/replies \
 
 For comments you declined to adopt, reply with a clear explanation of why the change was not applied.
 
-Resolve each conversation thread after the push succeeds. The GitHub REST API does not expose a thread-resolution endpoint; use the GraphQL API:
+Resolve verified addressed threads after the push succeeds; do not automatically resolve declined feedback unless the concern is demonstrably settled or the user approves. The GitHub REST API does not expose a thread-resolution endpoint; use the GraphQL API:
 
 ```bash
 gh api graphql -f query='
