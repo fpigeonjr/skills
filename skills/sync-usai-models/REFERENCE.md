@@ -17,7 +17,7 @@
 **Symptom**: `curl` returns network error or 502/503.
 
 **Recovery**:
-1. Confirm DNS/TLS connectivity using a documented endpoint such as `https://api.gsa.usai.gov/openapi.json`.
+1. Confirm DNS/TLS connectivity using a documented endpoint such as `<host>/openapi.json`.
 2. Wait 30s, retry once.
 3. If still down, report maintenance window; skip upstream sync, proceed with local validation only.
 
@@ -129,7 +129,7 @@ These are **guidance**, not authority. Live API catalog is always the source of 
 
 ## OpenAPI Schema Inspection
 
-The schema at `https://api.gsa.usai.gov/openapi.json` defines the API contract.
+The schema at `<host>/openapi.json` (host from `USAI_BASE_URL`) defines the API contract.
 
 Key fields to extract:
 - **The actual model-list schema** (currently `ModelList` and its item schema): use only fields declared there; do not assume availability, capability, or context metadata.
@@ -169,18 +169,22 @@ if [ -z "$API_KEY" ]; then
   echo "Error: USAI_API_KEY or GSAI_API_KEY not set" >&2
   exit 1
 fi
+if [ -z "${USAI_BASE_URL:-}" ]; then
+  echo "Error: USAI_BASE_URL not set" >&2
+  exit 1
+fi
 
 LOCAL_DIR="${1:-.}"
 TMPDIR="${TMPDIR:-/tmp}"
 
 echo "=== Fetching upstream catalog ==="
 curl -s -H "Authorization: Bearer $API_KEY" \
-  https://api.gsa.usai.gov/api/v1/models \
+  "$USAI_BASE_URL/models" \
   | jq '.' > "$TMPDIR/usai-models-live.json"
 echo "Saved to $TMPDIR/usai-models-live.json"
 
 echo "=== Fetching OpenAPI schema ==="
-curl -s https://api.gsa.usai.gov/openapi.json \
+curl -s "${USAI_BASE_URL%/api/v*}/openapi.json" \
   | jq '.' > "$TMPDIR/usai-openapi.json"
 echo "Saved to $TMPDIR/usai-openapi.json"
 

@@ -7,18 +7,19 @@ allowed-tools: Read Grep Glob Bash Edit Write
 
 # Sync USAi Models
 
-Periodically validate a local USAi provider integration against (1) live `/api/v1/models` catalog, (2) non-streaming/streaming/tool-use smoke tests, (3) OpenAPI schema at `https://api.gsa.usai.gov/openapi.json`, and (4) official GSA-TTS catalogs. Safely update model availability, metadata, fallbacks, tier choices, and tests/docs based on findings. Explicitly distinguish **catalog listing** (what the API advertises) from **callable deployment** (what actually works).
+Periodically validate a local USAi provider integration against (1) live `/api/v1/models` catalog, (2) non-streaming/streaming/tool-use smoke tests, (3) OpenAPI schema at `<host>/openapi.json`, and (4) official GSA-TTS catalogs. Safely update model availability, metadata, fallbacks, tier choices, and tests/docs based on findings. Explicitly distinguish **catalog listing** (what the API advertises) from **callable deployment** (what actually works).
 
 ## Inputs / Preconditions
 
 Before starting, have:
 
 - **USAI_API_KEY** or **GSAI_API_KEY** set in environment (checked at start).
+- **USAI_BASE_URL** set to the API root you were given at onboarding (e.g. `https://<host>/api/v1`). GSA documents the paths publicly but provides the host to authenticated users, so never hardcode it in tracked files.
 - Local provider config file(s) with model definitions, fallbacks, and tier mappings (e.g., `extensions/usai.ts`, `settings.json`, test fixtures).
 - Clarity on scope: are you auditing one integration, or a full provider instance?
 - No confidential secrets to log (the skill enforces sanitization).
 
-If the API key is missing, stop and ask.
+If the API key or base URL is missing, stop and ask.
 
 ## 1. Gather Local State
 
@@ -45,7 +46,7 @@ Fetch the live `/api/v1/models` endpoint (3 requests/second limit):
 
 ```bash
 curl -s -H "Authorization: Bearer $USAI_API_KEY" \
-  https://api.gsa.usai.gov/api/v1/models \
+  "$USAI_BASE_URL/models" \
   | jq . > /tmp/usai-models-live.json
 ```
 
@@ -56,7 +57,7 @@ Parse only fields actually present. The current response normally provides `id`,
 Fetch the schema (single request, under rate limit):
 
 ```bash
-curl -s https://api.gsa.usai.gov/openapi.json > /tmp/usai-openapi.json
+curl -s "${USAI_BASE_URL%/api/v*}/openapi.json" > /tmp/usai-openapi.json
 ```
 
 Extract:
@@ -100,7 +101,7 @@ Compare upstream catalog (step 2a) with local inventory (step 1):
 | Check | Action if Mismatch |
 |-------|-------------------|
 | Model ID in upstream but not local | Note as **new upstream model** |
-| Model ID in local but not upstream | Note as **not currently advertised**; check official docs for a deprecation notice |
+| Model ID in local but not upstream | Note as **not currently advertised** (withdrawn); check official docs for a deprecation notice. Also remove it from any offline fallback list, which would otherwise keep offering a model that no longer exists |
 | Listed model fails a smoke test | Note as **listed but not callable**, including sanitized status/code |
 | Local metadata differs from the official catalog | Note as **metadata drift** and record catalog revision |
 | Live model is absent from the official catalog | Keep conservative metadata and note **enrichment pending** |
