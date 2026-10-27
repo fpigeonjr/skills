@@ -47,6 +47,7 @@ Add to `~/.config/opencode/opencode.json`:
 | [`tdd`](skills/tdd/SKILL.md) | Test-driven development with red-green-refactor loop, vertical slices, and behavior-focused tests. |
 | [`grill-me`](skills/grill-me/SKILL.md) | Interview-style session that stress-tests a plan, resolving each branch of the decision tree one question at a time. |
 | [`grill-with-docs`](skills/grill-with-docs/SKILL.md) | Like `grill-me`, but challenges your plan against the existing domain model and updates `GLOSSARY.md` and ADRs inline. |
+| [`write-adr`](skills/write-adr/SKILL.md) | Draft a consequential architecture decision using the target repository's ADR conventions, or a minimal fallback when none exist. |
 | [`zoom-out`](skills/zoom-out/SKILL.md) | Map all relevant modules and callers for an unfamiliar area of code, using the project's domain vocabulary. |
 | [`handoff`](skills/handoff/SKILL.md) | Compact the current conversation into a handoff document for a fresh agent session to pick up. |
 | [`to-prd`](skills/to-prd/SKILL.md) | Synthesize the current conversation context into a PRD and publish it to the project issue tracker. |
