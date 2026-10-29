@@ -39,6 +39,7 @@ Add to `~/.config/opencode/opencode.json`:
 | Skill | Description |
 |---|---|
 | [`address-review-comments`](skills/address-review-comments/SKILL.md) | Collect all open PR review threads, investigate each one, apply valid changes, push, and reply to every thread with a summary. |
+| [`dependabot-sweep`](skills/dependabot-sweep/SKILL.md) | Sweep open Dependabot PRs across the GSA design-library fleet, bucket by CI and Angular-pin compatibility, and human-gate approvals. |
 | [`monitor-ci`](skills/monitor-ci/SKILL.md) | Check or poll GitHub Actions CI — instant snapshot, run polling, or E2E-specific monitoring. |
 | [`submit-draft-pr`](skills/submit-draft-pr/SKILL.md) | Create a draft PR using the repo template, with a visual summary, before/after evidence, merge danger, labels, and assignment. |
 | [`release-pr`](skills/release-pr/SKILL.md) | Poll CI on a draft PR until all checks pass, then convert it to ready-for-review. |
