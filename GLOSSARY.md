@@ -16,14 +16,14 @@ A tracked unit of work hosted on GitHub Issues. The default work item for this c
 _Avoid_: ticket, when the work item is on GitHub.
 
 **Ticket**:
-A tracked unit of work hosted on Jira (the GSA instance). Used only by `start-ticket`, which also accepts GitHub issues. Use "ticket" only for Jira-hosted work or when quoting external systems; everything else is an **Issue**.
+A tracked unit of work hosted on Jira. Use "ticket" only for Jira-hosted work or when quoting external systems; everything else is an **Issue**.
 
 **Acceptance criteria (AC)**:
 The `## Acceptance criteria` checklist on an **Issue**, defining what "done" means. `goal` drives a loop until every AC item is met with verifiable evidence; `to-issues` writes them.
 _Avoid_: requirements, definition of done (reserve "definition of done" for the AC + green-checks pair).
 
 **Integration branch**:
-The shared branch a **Feature branch** is cut from and merged back into, named `integration-<PI>.<Sprint>` (e.g. `integration-66.1`, `integration-59.IP`). `start-ticket` picks the highest by PI then sprint (`IP` sorts last).
+The shared branch a **Feature branch** is cut from and merged back into, named `integration-<PI>.<Sprint>` (e.g. `integration-66.1`, `integration-59.IP`). Selection follows the target repository's approved branching workflow.
 _Avoid_: main, develop, trunk (this collection branches off integration branches, not a single trunk).
 
 **Spec branch**:
@@ -31,7 +31,7 @@ A dedicated aggregation branch, named `spec/<slug>`, where `implement-spec` comb
 _Avoid_: integration branch, when referring to this isolated aggregation branch.
 
 **Feature branch**:
-The branch created for one **Issue** or **Ticket**. Jira branches are named exactly after the ticket ID (e.g. `IAEMOD-58792`); GitHub branches are `gh-<number>-<slug>`.
+The branch created for one **Issue** or **Ticket**. Jira branches are named exactly after the ticket ID (e.g. `PROJ-123`); GitHub branches are `gh-<number>-<slug>`.
 _Avoid_: topic branch.
 
 **Worktree**:
@@ -68,6 +68,6 @@ A single unresolved conversation on a PR. `address-review-comments` collects eve
 
 ## Flagged ambiguities
 
-- "ticket" vs "issue" — historically used interchangeably across skills. Resolved: GitHub-hosted work is an **Issue**; Jira-hosted work is a **Ticket**. `start-ticket` is the only skill that legitimately spans both because it accepts either source.
+- "ticket" vs "issue" — historically used interchangeably across skills. Resolved: GitHub-hosted work is an **Issue**; Jira-hosted work is a **Ticket**. External branch-setup workflows may accept either source; distinguish them explicitly.
 - "AFK" / "autonomous" — `goal` was previously framed as an autonomous grind. Resolved: the loop is **human-checkpointed** (approval gate at the start, review handback at the end); it executes an approved plan rather than self-scoping.
 - "code review" vs "PR review" — a **Code review** is side-effect-free analysis; a **PR review** is the approved GitHub artifact posted from that analysis.

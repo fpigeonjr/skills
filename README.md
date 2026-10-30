@@ -36,10 +36,11 @@ Add to `~/.config/opencode/opencode.json`:
 
 ## Skills
 
+Organization-specific journal, sprint, ticket, provider, and fleet workflows are maintained separately in the GFE collection. This repository contains the reusable skills; moving a skill does not erase its prior Git history.
+
 | Skill | Description |
 |---|---|
 | [`address-review-comments`](skills/address-review-comments/SKILL.md) | Collect all open PR review threads, investigate each one, apply valid changes, push, and reply to every thread with a summary. |
-| [`dependabot-sweep`](skills/dependabot-sweep/SKILL.md) | Sweep open Dependabot PRs across the GSA design-library fleet, bucket by CI and Angular-pin compatibility, and human-gate approvals. |
 | [`monitor-ci`](skills/monitor-ci/SKILL.md) | Check or poll GitHub Actions CI — instant snapshot, run polling, or E2E-specific monitoring. |
 | [`submit-draft-pr`](skills/submit-draft-pr/SKILL.md) | Create a draft PR using the repo template, with a visual summary, before/after evidence, merge danger, labels, and assignment. |
 | [`release-pr`](skills/release-pr/SKILL.md) | Poll CI on a draft PR until all checks pass, then convert it to ready-for-review. |
@@ -54,7 +55,6 @@ Add to `~/.config/opencode/opencode.json`:
 | [`to-prd`](skills/to-prd/SKILL.md) | Synthesize the current conversation context into a PRD and publish it to the project issue tracker. |
 | [`to-issues`](skills/to-issues/SKILL.md) | Break a plan or PRD into independently-grabbable GitHub issues using tracer-bullet vertical slices. |
 | [`write-a-skill`](skills/write-a-skill/SKILL.md) | Create new agent skills with proper structure, progressive disclosure, and bundled reference files. |
-| [`start-ticket`](skills/start-ticket/SKILL.md) | Create a worktree and feature branch off the current integration branch for a Jira ticket, using `wt` (worktrunk) and following the team's sprint branching strategy. |
 | [`goal`](skills/goal/SKILL.md) | Drive a GitHub issue to completion through a human-checkpointed red-green loop — confirms the test plan upfront, runs TDD cycles until all AC are met and checks are green, then hands back for review before any PR is opened. |
 | [`implement-spec`](skills/implement-spec/SKILL.md) | Coordinate a GitHub spec's dependency graph on an isolated spec branch, with human gates and sequential execution by default. |
 | [`init`](skills/init/SKILL.md) | Create or update `AGENTS.md` for a repository by exploring the codebase and extracting high-signal guidance for future agent sessions. |

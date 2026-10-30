@@ -9,7 +9,7 @@ allowed-tools: Read Grep Glob Bash Edit Write
 
 Single-ticket implementation loop, gated by **your approval at the start** and **your review at the end**. Drives a ticket from "branch exists" to "AC met + checks green" — you set the plan, the loop executes it and reports back.
 
-Designed to run **after** `start-ticket` and **before** `submit-draft-pr`.
+Designed to run **after** repository-approved branch/worktree setup and **before** `submit-draft-pr`. The optional organization-specific `start-ticket` skill is maintained separately; this workflow does not require it to be installed.
 
 See [REFERENCE.md](REFERENCE.md) for the full loop spec and guard details.
 

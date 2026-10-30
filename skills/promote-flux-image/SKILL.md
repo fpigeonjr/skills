@@ -61,7 +61,7 @@ gh pr view --json number,url,headRefName,state 2>/dev/null
 ```
 
 - If an open PR already targets this promotion (e.g. opened by automation, or a prior attempt), prefer updating that branch/PR over opening a duplicate.
-- Otherwise, create a new branch off the correct base and open a new PR following this repo's normal branching convention (see `start-ticket` skill if one is in use).
+- Otherwise, create a new branch off the correct base and open a new PR following this repo's normal branching convention (if using an externally installed branch-setup skill, explicitly load its instructions first).
 
 Do not reuse an unrelated branch or an already-merged/closed PR.
 

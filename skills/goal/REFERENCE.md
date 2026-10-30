@@ -66,7 +66,7 @@ Before handing back, confirm:
 ## Composition
 
 ```
-start-ticket       ← creates worktree + branch
+branch setup       ← repository-approved worktree + branch
     ↓
 /goal              ← THIS SKILL: implement + verify loop
     ↓
