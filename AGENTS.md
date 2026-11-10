@@ -68,7 +68,7 @@ allowed-tools: Read Grep Glob Bash Edit Write
 
 **to-issues skill**: Persist HITL (human-in-the-loop) or AFK (fully automated) in each published issue. Only AFK issues get automation-ready labels; HITL issues require the stated human checkpoint. Publish in dependency order so real issue IDs can be referenced in "Blocked by" fields.
 
-**copilot-models skill**: The one skill with an executable script (`scripts/copilot_models.py`, Python stdlib only), because polling the live Copilot `/models` API and diffing it against Pi's catalog is deterministic and touches a credential. The script reads Pi's stored Copilot token and must never print it. The skill is read-only; it edits tiers or task-model preferences only with explicit approval.
+**copilot-models skill**: The one skill with an executable script (`scripts/copilot_models.py`, Python stdlib only), because polling the live Copilot `/models` API and diffing it against Pi's catalog is deterministic and touches a credential. The script reads Pi's stored Copilot token and must never print it. It must also never echo `models.json`, which can hold API-key resolvers: its `--overrides --write` mode merges only `providers.github-copilot.modelOverrides`, atomically, with no backup copy (a `.bak` would escape the dotfiles gitignore). The skill is read-only by default; it edits tiers, task-model preferences, or limit overrides only with explicit approval.
 
 **retro skill**: User-invoked, session-evidence-based environment review. Daily mode samples today's accessible sessions for the current repo. Propose first; apply only selected changes, with separate explicit approval for global scope. No automatic commits or publication.
 

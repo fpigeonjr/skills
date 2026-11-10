@@ -59,7 +59,7 @@ Organization-specific journal, sprint, ticket, provider, and fleet workflows are
 | [`implement-spec`](skills/implement-spec/SKILL.md) | Coordinate a GitHub spec's dependency graph on an isolated spec branch, with human gates and sequential execution by default. |
 | [`init`](skills/init/SKILL.md) | Create or update `AGENTS.md` for a repository by exploring the codebase and extracting high-signal guidance for future agent sessions. |
 | [`retro`](skills/retro/SKILL.md) | Review a session or today's repo sessions and propose evidence-backed environment improvements; apply only the changes you select. |
-| [`copilot-models`](skills/copilot-models/SKILL.md) | Poll GitHub Copilot's live model catalog, diff it against Pi's catalog, and audit Copilot tiers and task-model routing. Ships a stdlib Python script. |
+| [`copilot-models`](skills/copilot-models/SKILL.md) | Poll GitHub Copilot's live model catalog, diff it against Pi, audit Copilot tiers and task-model routing, and generate Copilot limit overrides for `models.json`. Ships a stdlib Python script. |
 | [`teach`](skills/teach/SKILL.md) | Run a stateful, multi-session teaching workspace — creates HTML lessons, reference cheat sheets, and learning records tailored to a user's mission. |
 
 ## Whole-spec implementation

@@ -20,6 +20,7 @@ Requires `python3` (standard library only). The script reads the Copilot token f
 Rules for the agent:
 
 - Never `cat` or `read` `auth.json`, and never echo or reuse the token.
+- Never print `models.json` either; it can hold API-key resolvers. The script prints only the Copilot overrides plan.
 - Never add `--allow-host` on your own initiative. Add it only for a GitHub Enterprise host the user explicitly names.
 
 Exit codes:
@@ -27,7 +28,7 @@ Exit codes:
 - `2`: auth or config problem. Ask the user to start a Pi session on any `github-copilot` model, which refreshes the token, then rerun.
 - `3`: network or response error.
 
-Other flags: `--all` includes unavailable models, `--json` gives machine-readable output, `--no-pi` skips the `pi --list-models` check, and `--agent-dir DIR` overrides the Pi config directory.
+Other flags: `--all` includes unavailable models, `--json` gives machine-readable output, `--no-pi` skips the `pi --list-models` check, `--agent-dir DIR` overrides the Pi config directory, and `--overrides [--write]` plans or applies limit overrides (step 5).
 
 ## Workflow
 
@@ -53,15 +54,32 @@ Other flags: `--all` includes unavailable models, `--json` gives machine-readabl
    - **Report:** the live table trimmed to what matters, billing notes verbatim, drift, ref statuses, and a tier table `| tier | current | status | candidates |`.
    - **Tiers:** edit the Copilot family entry in `model-tiers.ts` (`model`, `thinking`, `short`) and any mirrored `AGENTS.md` table. The user then runs `/reload`.
    - **Task models:** load the `pi-herdr-agents` skill first and follow its write contract. Unless the user approves dropping categories, send the complete merged `tasks` map, because omitted categories are deleted. Include `tasksMeta: {generatedAt, method}`, a `basis` whose `kind` equals `method`, and `expectedConfigRevision` when a revision is available. The user then runs `/reload`.
+   - **Limit overrides:** use these when the drift section shows "Pi larger" rows.
+     1. Run `--overrides` (a dry run) and show the plan table and its `PLAN_ID`.
+     2. After approval, run `--overrides --write PLAN_ID`. The script refuses if the regenerated plan or `models.json` no longer matches the ID; if so, show the new plan and get fresh approval. It also refuses when the Pi registry check did not succeed.
+     3. The user applies the change: open `/model` and reselect the current model, or restart Pi. `/reload` alone does not apply it to the running model. Then rerun the audit and confirm the limit diffs show `[override]` sources that match live.
+
+     What `--write` does:
+     - It only touches `providers.github-copilot.modelOverrides` in `models.json`: `contextWindow` is set to `max_prompt_tokens`, falling back to the context window, and `maxTokens` to `max_output_tokens`.
+     - It covers every model that is live-available and selectable in Pi. Other fields, other providers, and stale entries are left alone.
+     - It refuses to touch non-plain-JSON files.
+     - It stages its write in a `.models.json.*.tmp` file next to `models.json`. The file is removed on failure or a catchable signal, and the next run sweeps any copy left by a killed run. Such a copy holds the whole file, so check that the user's dotfiles ignore it.
+
+     Rerun it after each audit so the values follow Copilot's limits.
 
 ## Interpreting the output
 
 - **Availability mirrors Pi's own rule.** A model counts as available only if it supports tool calls and is picker-enabled and not policy-disabled, or meets the individual-account policy fallback. Pi's saved `availableModelIds` in `auth.json` is refreshed only at login or token refresh, so "saved account availability differs" means Pi's view is stale.
-- **Selectability and thinking levels.** Selectability is checked with `pi --list-models`, run against the same agent directory. Thinking levels apply Pi's supported-level rule to Pi's catalog cache (`models-store.json`), as do prices and limit diffs. When the cache lacks a model, the script reports it as unverified instead of guessing.
-- **Limit diffs.** Copilot's limits are authoritative. A diff matters only when Pi's figure is larger than live, and the script marks those rows "Pi larger":
-  - **Context:** Pi's compaction may trigger too late.
-  - **Output:** Pi may request more output tokens than Copilot advertises.
+- **Selectability and thinking levels.** Selectability is checked with `pi --list-models`, run against the same agent directory. Thinking levels and prices come from Pi's catalog cache (`models-store.json`); thinking levels use Pi's supported-level rule. When the cache lacks a model, the script reports it as unverified instead of guessing.
+- **Limit diffs.** Copilot's limits are authoritative. Pi's side is its effective value: the `models.json` override if one exists, otherwise the catalog cache (each row is tagged `[override]` or `[cache]`).
+  - **Context** is compared against `max_prompt_tokens`, the input Copilot accepts, falling back to the context window. When Pi's figure is larger, Pi's compaction may trigger too late.
+  - **Output:** when Pi's figure is larger, Pi may request more output tokens than Copilot advertises.
 
-  Diffs where Pi's figure is smaller are informational. Don't hand-edit Pi's catalog cache.
+  Rows where Pi's figure is smaller are informational. Fix the larger ones with limit overrides (step 5), never by editing the catalog cache.
+- **Why overrides set `contextWindow` to the max prompt.** Pi uses `contextWindow` for two things:
+  - It compacts once input passes `contextWindow − reserveTokens`.
+  - It caps output at `contextWindow − input − 4096`.
+
+  Setting it to `max_prompt_tokens` makes compaction fire before Copilot rejects the prompt. The cost is that output gets capped tighter than Copilot requires as input grows, to about 12k at the compaction threshold with the default reserve. Raise this with the user if long single responses matter near the limit.
 - **Prices are estimates, not the user's bill.** `Pi list $` columns are list prices per million tokens from Pi's catalog cache, useful for relative comparison only. Org-managed seats may bill in credits at a different rate.
 - **Billing notes come from the API.** They are Copilot's own `warning_message` text and show whether premium-request multipliers or usage-based billing apply. Spending caps for org-managed seats appear on the user's GitHub Copilot usage page, not in the API.
