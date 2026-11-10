@@ -1,6 +1,6 @@
 # skills
 
-A personal collection of plain-Markdown agent skills for Pi and OpenCode, covering GitHub/Jira workflow automation and software-engineering practice. There is no build system or tooling — editing `.md` files is the workflow.
+A personal collection of plain-Markdown agent skills for Pi and OpenCode, covering GitHub/Jira workflow automation and software-engineering practice. There is no build system — editing `.md` files is the workflow; a few skills bundle standalone helper scripts.
 
 ## Language
 

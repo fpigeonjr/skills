@@ -2,7 +2,7 @@
 
 ## What this repo is
 
-A collection of plain-Markdown agent skills for OpenCode and Pi. No build system, no tests, no CI — editing `.md` files IS the workflow.
+A collection of plain-Markdown agent skills for OpenCode and Pi. No build system, no tests, no CI — editing `.md` files IS the workflow. The one exception is a bundled stdlib Python script in `copilot-models` (see below).
 
 ## Repo structure
 
@@ -11,13 +11,14 @@ skills/
 └── skills/
     ├── <skill-name>/SKILL.md        # required entry point for every skill
     └── <skill-name>/                # optional reference files alongside SKILL.md
+    └── <skill-name>/scripts/        # optional executable helpers (rare; stdlib only)
 ```
 
-No `package.json`, no manifests, no lockfiles, no tooling of any kind.
+No `package.json`, no manifests, no lockfiles, no dependencies. Bundled scripts must run with the system interpreter alone.
 
 ## Developer commands
 
-None. All work is editing Markdown files.
+None for Markdown. For a bundled script, syntax-check it after edits: `python3 -m py_compile <script> && find skills -name __pycache__ -exec rm -rf {} +`.
 
 ## Skill file format
 
@@ -66,6 +67,8 @@ allowed-tools: Read Grep Glob Bash Edit Write
 **to-prd skill**: Requires `docs/agents/issue-tracker.md` to exist in the target project before publishing.
 
 **to-issues skill**: Persist HITL (human-in-the-loop) or AFK (fully automated) in each published issue. Only AFK issues get automation-ready labels; HITL issues require the stated human checkpoint. Publish in dependency order so real issue IDs can be referenced in "Blocked by" fields.
+
+**copilot-models skill**: The one skill with an executable script (`scripts/copilot_models.py`, Python stdlib only), because polling the live Copilot `/models` API and diffing it against Pi's catalog is deterministic and touches a credential. The script reads Pi's stored Copilot token and must never print it. The skill is read-only; it edits tiers or task-model preferences only with explicit approval.
 
 **retro skill**: User-invoked, session-evidence-based environment review. Daily mode samples today's accessible sessions for the current repo. Propose first; apply only selected changes, with separate explicit approval for global scope. No automatic commits or publication.
 
