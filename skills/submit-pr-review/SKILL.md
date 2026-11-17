@@ -46,6 +46,8 @@ Explicitly load `code-review` using the harness's skill loader, or discover and 
 
 For a follow-up review, provide the prior review findings as additional context. Verify each prior concern against the new commits and distinguish resolved findings from findings that remain. Still inspect the complete current diff for regressions and new issues.
 
+For visible UI changes, treat missing visual evidence as a coverage gap. If a `capture-ui-screenshots` skill is available, offer it (human-approved, local-only screenshots); otherwise request screenshots from the author. Never claim layouts were verified without captured evidence.
+
 ## Write the Review
 
 Read [REVIEW-FORMAT.md](REVIEW-FORMAT.md) and use it to turn the `code-review` output into a human-readable PR review.
