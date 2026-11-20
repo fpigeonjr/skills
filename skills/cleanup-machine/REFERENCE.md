@@ -6,12 +6,12 @@ Use these defaults when the profile does not override them. Expand `~` and envir
 
 | Setting | Default |
 |---|---|
-| Code roots | `~/Code` (depth 2), plus each repository's registered worktrees |
+| Code roots | `~/Code` (depth 3), plus each repository's registered worktrees |
 | Agent worktree roots | locations reported by installed harnesses (e.g. `~/.herdr/worktrees`) and configured `wt` worktree paths |
 | Stale worktree / branch | no commits and no file changes for 14 days |
 | Stale session log | older than 60 days |
 | Large item threshold | 500 MB, for anything reported outside a table |
-| Per-category cap | ~40 candidates; report the remainder as a count |
+| Row grouping | above ~40 targets in a category, group rows by repository, root, and class; each row maps to explicit manifest IDs |
 
 ## Sweep categories
 
@@ -19,12 +19,13 @@ Run in this order, because the first ones usually reclaim the most space. For ea
 
 ### 1. Worktrees
 
-- Enumerate with `git worktree list --porcelain` from each principal checkout, `wt list` where configured, and the harness's own listing for agent-managed worktrees. Sibling directories named `<repo>.<branch>` are worktrees only if Git registers them.
+- Inventory with `scripts/cleanup_inventory.py scan` (see [below](#worktree-inventory-script)). It enumerates `git worktree list --porcelain` from each principal checkout, including checkouts that own agent-managed worktrees outside the code roots. Cross-check with `wt list` or the harness's own listing when the script reports errors. Sibling directories named `<repo>.<branch>` are worktrees only if Git registers them.
 - Collect: branch, upstream, ahead/behind, whether the branch is merged into its integration target, dirty/untracked/ignored file counts, stash entries for that branch, initialized submodules, locks (`git worktree list --porcelain` reports `locked`), last commit date, last modification time, size (`du -sh`), and holders (processes whose cwd is inside the path via `lsof -a -d cwd`, open terminal or agent panes; avoid `lsof +D` on large trees).
 - PR state (`gh pr list --head <branch> --state all`) is supporting evidence only. A closed-unmerged PR means "needs preservation or publication" unless the user says the work is abandoned.
 - Removal goes through the owning manager, removing only the worktree:
   - `wt remove --no-delete-branch --no-hooks --foreground <branch>`. By default `wt remove` also deletes the branch using its own default-branch and squash-equivalence rules, runs configured pre/post-remove hooks (which can run arbitrary commands, including remote ones), and returns before removal finishes. Run hooks only if the user approved their enumerated effects as a separate row.
-  - `git worktree remove <path>` (no `--force`) for plain Git worktrees; the owning harness's tool for agent-managed ones.
+  - `git worktree remove <path>` (no `--force`) for plain Git worktrees.
+  - The owning harness's tool for agent-managed ones. Fall back to plain `git worktree remove` (no `--force`) only when the harness is unavailable or cannot address the worktree (e.g. reports it not found), never when it refuses for a safety or dependency reason; a refusal makes the target **blocked**. For Herdr (CLI behavior observed with Herdr 0.9.x; re-check `herdr worktree --help` if the version differs): the server must be running (if it is not, ask before starting it, e.g. as a background `herdr server`, and stop it afterwards with `herdr server stop` only if this run started it); `herdr worktree open --cwd <principal> --path <worktree>` returns a workspace id; `herdr worktree remove --workspace <id>` (no `--force`) removes the checkout and keeps the branch. Opening adds a per-repository workspace to the sidebar; after the batch, close only the workspaces this run opened (`herdr workspace close <id>`), never pre-existing ones.
   - Branch deletion is always a separate row in category 2, never a side effect.
 - Prunable (missing-directory) registrations are reported. `git worktree prune` is repository-wide, so run it only when `git worktree prune --dry-run --verbose` lists exactly the approved set, and never for a path that may be on an unmounted volume.
 
@@ -60,6 +61,30 @@ Run in this order, because the first ones usually reclaim the most space. For ea
 
 - `~/Downloads` and `~/Desktop`: items over the large threshold, or older than 90 days, sorted by size. Report only; never propose deletion here. The user decides by hand.
 
+## Worktree inventory script
+
+`scripts/cleanup_inventory.py` (Python 3 stdlib) is read-only: it never deletes, prunes, fetches, or edits a repository, and runs Git with `GIT_OPTIONAL_LOCKS=0` so `git status` does not refresh indexes. Its only writes are `manifest.jsonl` and `inventory.json` in a new run directory: a unique owner-only temp directory by default, or an empty `--out` directory (mode 0700, files 0600, never overwritten). `manifest.jsonl` is the approval authority: a JSON Lines file whose first line holds the scan settings and whose SHA-256 the report shows; `inventory.json` is informational. Remote-tracking refs are as fresh as the last fetch; say so in the report.
+
+A failed per-target inspection (Git error or timeout, `lsof` failure, unreadable files, a path containing control characters) yields `error`, never a clean class. Missing or unreadable roots are listed in the scan's `errors`; any error there means coverage is incomplete. A failed `du` leaves the size unknown, not zero.
+
+- `scan --root R [--root R2] --depth N --agent-root A --integration REF --stale-days D [--out DIR]` classifies every linked worktree and prints the run directory, manifest digest, and errors:
+
+  | Class | Meaning | Report as |
+  |---|---|---|
+  | `safe` | clean, no stash/submodule/lock, tip reachable from a confirmed integration ref, the default branch, or a live remote branch, older than D days, **no ignored files** | safe to remove |
+  | `ignored-conventional` | as `safe`, but holds ignored real top-level directories with conventional build-output names; the exact paths are listed. A name is not regeneration proof | needs explicit approval to lose the listed paths |
+  | `recent` | reachable, but a commit or file changed within D days | keep |
+  | `ignored-other` | reachable and stale, but holds any other ignored data (files, symlinks, nested paths, local env or config, logs) | blocked/unknown |
+  | `unreachable` | commits not on any durable ref, including squash-merged branches | needs preservation |
+  | `dirty` | changes, renames, untracked files, stash, submodule, lock, or detached HEAD | needs preservation |
+  | `held` | a process's cwd is inside it | blocked |
+  | `prunable` | registered, directory missing | propose `git worktree prune` (exact-set rule) |
+  | `error` | an inspection failed | blocked/unknown |
+
+  The script does not know PR state, protected paths, agent panes, or open editors; apply those checks yourself (SKILL step 5) to both executable classes. The manifest sorts by class, kind (`code` or `agent`), and repository, so groups are usually contiguous ID ranges; after downgrades, list exceptions explicitly.
+- `recheck --run DIR --digest SHA256 --rows 1-40,52 [--approve-ignored]` refuses to run unless `manifest.jsonl` still has the reported digest, and rejects unknown rows, rows that were not executable at report time, and `ignored-conventional` rows without `--approve-ignored`. It re-classifies only the approved targets with the settings frozen in the manifest and returns `still-safe` only when path, repository, Git common dir, branch, HEAD, class, and the exact ignored-path set all match the report (otherwise `changed` with the differing fields, or `gone`). It never adds targets.
+- Tests: `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/cleanup-machine/tests -v`.
+
 ## Report format
 
 Start with a summary block:
@@ -74,7 +99,7 @@ Then one table per category, sorted by size:
 |---|---|---|---|---|---|
 
 - **Target** is the exact path or ref. **Evidence** gives the facts that drove the class (for example "merged into integration, clean, last commit 41d ago").
-- Number rows across the whole report so the user can approve them as, for example, "approve 1–4, 7".
+- Number rows across the whole report so the user can approve them as, for example, "approve 1–4, 7". Report row numbers and manifest IDs are separate: every report row states the exact manifest IDs it covers (e.g. "manifest 12–40, 44") and its count.
 - List **needs preservation**, **blocked/unknown**, and notable **keep** items below each table with a one-line reason.
 
 ## Snapshot format
@@ -99,7 +124,7 @@ The profile is local to the machine and is never committed with this skill. Ever
 # cleanup-machine profile
 
 ## Roots
-- ~/Code (depth 2)
+- ~/Code (depth 3)
 
 ## Agent worktree roots
 - ~/.herdr/worktrees

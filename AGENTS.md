@@ -2,7 +2,7 @@
 
 ## What this repo is
 
-A collection of plain-Markdown agent skills for OpenCode and Pi. No build system, no tests, no CI — editing `.md` files IS the workflow. The one exception is a bundled stdlib Python script in `copilot-models` (see below).
+A collection of plain-Markdown agent skills for OpenCode and Pi. No build system or CI; editing `.md` files IS the workflow. The exceptions are bundled stdlib Python scripts in `copilot-models` and `cleanup-machine` (see below).
 
 ## Repo structure
 
@@ -18,7 +18,7 @@ No `package.json`, no manifests, no lockfiles, no dependencies. Bundled scripts 
 
 ## Developer commands
 
-None for Markdown. For a bundled script, syntax-check it after edits: `python3 -m py_compile <script> && find skills -name __pycache__ -exec rm -rf {} +`.
+None for Markdown. For a bundled script, syntax-check it after edits: `python3 -m py_compile <script> && find skills -name __pycache__ -exec rm -rf {} +`. Skills with a `tests/` directory run offline with `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/<skill>/tests -v`.
 
 ## Skill file format
 
@@ -68,11 +68,11 @@ allowed-tools: Read Grep Glob Bash Edit Write
 
 **to-issues skill**: Persist HITL (human-in-the-loop) or AFK (fully automated) in each published issue. Only AFK issues get automation-ready labels; HITL issues require the stated human checkpoint. Publish in dependency order so real issue IDs can be referenced in "Blocked by" fields.
 
-**copilot-models skill**: The one skill with an executable script (`scripts/copilot_models.py`, Python stdlib only), because polling the live Copilot `/models` API and diffing it against Pi's catalog is deterministic and touches a credential. The script reads Pi's stored Copilot token and must never print it. It must also never echo `models.json`, which can hold API-key resolvers: its `--overrides --write` mode merges only `providers.github-copilot.modelOverrides`, atomically, with no backup copy (a `.bak` would escape the dotfiles gitignore). The skill is read-only by default; it edits tiers, task-model preferences, or limit overrides only with explicit approval.
+**copilot-models skill**: The first skill with an executable script (`scripts/copilot_models.py`, Python stdlib only), because polling the live Copilot `/models` API and diffing it against Pi's catalog is deterministic and touches a credential. The script reads Pi's stored Copilot token and must never print it. It must also never echo `models.json`, which can hold API-key resolvers: its `--overrides --write` mode merges only `providers.github-copilot.modelOverrides`, atomically, with no backup copy (a `.bak` would escape the dotfiles gitignore). The skill is read-only by default; it edits tiers, task-model preferences, or limit overrides only with explicit approval.
 
 **retro skill**: User-invoked, session-evidence-based environment review. Daily mode samples today's accessible sessions for the current repo. Propose first; apply only selected changes, with separate explicit approval for global scope. No automatic commits or publication.
 
-**cleanup-machine skill**: User-invoked, cross-session counterpart to `cleanup-session`. Report first, then remove only targets approved by exact row. Machine- or employer-specific roots, private repository patterns, and protected paths belong in the local profile `${XDG_CONFIG_HOME:-~/.config}/cleanup-machine/profile.md`, never in this repo. Snapshots record sizes and counts only.
+**cleanup-machine skill**: User-invoked, cross-session counterpart to `cleanup-session`. Report first, then remove only targets approved by exact row. Machine- or employer-specific roots, private repository patterns, and protected paths belong in the local profile `${XDG_CONFIG_HOME:-~/.config}/cleanup-machine/profile.md`, never in this repo. Snapshots record sizes and counts only. Its `scripts/cleanup_inventory.py` (stdlib, read-only) inventories worktrees into a private, digest-pinned run manifest; `recheck` re-validates only approved manifest IDs against the report's identity and settings. Offline tests: `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s skills/cleanup-machine/tests -v`.
 
 **implement-spec skill**: User-invoked whole-spec coordination for GitHub issues. Use a dedicated `spec/<slug>` aggregation branch from an approved pinned base, not the shared integration branch. Sequential by default; parallel workers need explicit approval and pre-approved issue test plans. Release dependencies only after verification (integration, green checks, AC evidence, and required human/manual checkpoints). Preserve HITL gates, serialize merges, retain worktrees, and hand back without automatic push, PR creation, issue closure, or cleanup.
 
