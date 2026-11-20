@@ -72,6 +72,8 @@ allowed-tools: Read Grep Glob Bash Edit Write
 
 **retro skill**: User-invoked, session-evidence-based environment review. Daily mode samples today's accessible sessions for the current repo. Propose first; apply only selected changes, with separate explicit approval for global scope. No automatic commits or publication.
 
+**cleanup-machine skill**: User-invoked, cross-session counterpart to `cleanup-session`. Report first, then remove only targets approved by exact row. Machine- or employer-specific roots, private repository patterns, and protected paths belong in the local profile `${XDG_CONFIG_HOME:-~/.config}/cleanup-machine/profile.md`, never in this repo. Snapshots record sizes and counts only.
+
 **implement-spec skill**: User-invoked whole-spec coordination for GitHub issues. Use a dedicated `spec/<slug>` aggregation branch from an approved pinned base, not the shared integration branch. Sequential by default; parallel workers need explicit approval and pre-approved issue test plans. Release dependencies only after verification (integration, green checks, AC evidence, and required human/manual checkpoints). Preserve HITL gates, serialize merges, retain worktrees, and hand back without automatic push, PR creation, issue closure, or cleanup.
 
 ## Credits
