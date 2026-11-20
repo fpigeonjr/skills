@@ -54,6 +54,14 @@ gh pr list --state merged --limit 5 --json title,body
 
 Read the full diff carefully before writing anything.
 
+### Detect a tracker key
+
+Look for an external tracker key (Jira-style, e.g. `ABC-123`) in the current branch name (`git branch --show-current`) and in non-option `$ARGUMENTS`. Never extract from the `--base` value. Only a key the user typed, or the leading token of the branch (or of its final path segment), counts:
+
+- The branch (or its last `/`-separated segment for `user/ABC-123-x`) must **start** with the key, or with `gh-<number>-` immediately followed by it (`gh-90-ABC-123-slug`). Match `^[A-Za-z][A-Za-z0-9]+[-_ ]\d+(?![A-Za-z0-9])` there (the number must end the token, so `ABC-123abc` is not a key), normalize to uppercase with a hyphen (`abc_123` → `ABC-123`), then validate against `^[A-Z][A-Z0-9]+-\d+$`.
+- Do not extract keys from inside dependency or release branches (`dependabot/…`, `renovate/…`, `release-1-2`, `v2-3`, `hotfix-4`) or integration branches (`integration-68.3`). A version-like or conventional prefix (`release`, `hotfix`, `v`/`v2`, `gh`, `integration`, `feature`, `bugfix`, `renovate`, `dependabot`) is not a project key; project prefixes may end in a digit (`ABC2-123`).
+- Treat a branch-derived key as a **candidate**: show it in the pre-create confirmation so the user can reject it. If more than one distinct key is found, ask which to use. Never invent a key the branch, arguments, or user did not supply.
+
 ## Fetch the Repo PR Template
 
 Always use the repository's PR template as the starting point for the body. Prefer the template that exists in the working tree or on the PR base branch; only fall back to a free-form body if no template can be found.
@@ -137,7 +145,7 @@ Skip labeling if the right labels cannot be determined with confidence.
 
 ## Create the Draft PR
 
-Extract a short PR title (under 70 characters) from the changes.
+Extract a short PR title (under 70 characters) from the changes. When a tracker key was detected, start the title with it exactly, uppercase with a hyphen: `ABC-123 Allow null feed type`. Trackers such as Jira link PRs and their squash/merge commits only by an exact, case-sensitive key; GitHub's auto-generated title (`Abc 123 …`) does not match. Also mention the key in the body's linked-issues section (or near the top if there is none). Never let `gh` derive the title from the branch name; always pass `--title`.
 
 Write the populated template body to a file so Markdown, checkboxes, and comments survive unchanged:
 
@@ -148,7 +156,7 @@ cat >"$BODY_FILE" <<'EOF'
 EOF
 ```
 
-Confirm with the user before creating — show the base branch, selected template path (or "none found"), title, labels, and a brief summary of what the body will contain. Ask "Ready to create?"
+Confirm with the user before creating — show the base branch, selected template path (or "none found"), tracker key (or "none"), title, labels, and a brief summary of what the body will contain. Ask "Ready to create?"
 
 ```bash
 gh pr create \
